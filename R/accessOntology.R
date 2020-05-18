@@ -5,7 +5,12 @@
 #  INTEREST ARGUMENTS
 #' @param api.key character. An API Key is required to access any API call. It is used within {cedarr}
 #' as a header for http requests. An API key is linked to a CEDAR account (https://cedar.metadatacenter.org/profile)
-#' @param ontology character. Ontology name to display.
+#' @param ontology character. Ontology name to display. In this context, ontology can be set to NA:
+#' this will list all the ontologies registered in CEDAR.
+#' @param sub character. What sub-items shall be retrieved: none, its classes or its
+#' properties? (resp. NA, "classes" or "properties")
+#' @param sub.level character. At which level `sub` shall be fetched: all or only root?
+#' (resp. NA or "roots"). This parameter will only be evaluated if `sub` is filled.
 #' @param output.mode character. "full" will return the whole response object (from {httr}) or "content" will
 #' fetch the interest values from the response object. Getting the whole object might be interesting to
 #' have a look at system metadata, or in case of error to debug the connection. (defaults to "content")
@@ -25,7 +30,9 @@
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 accessOntology <- function(
   api.key,
-  ontology,
+  ontology = NA_character_,
+  sub = NA_character_,
+  sub.level = NA_character_,
   output.mode = "content",
   page = 1,
   page.size = 50
@@ -45,9 +52,22 @@ accessOntology <- function(
       See https://cedar.metadatacenter.org/profile.",
       argcheck = check
     )
-  if(!is.character(ontology) || is.na(ontology))
+  if(!is.character(ontology) || !is.na(ontology) || grepl("^ontologies", ontology))
     addError(
-      msg = "Invalid type for `ontology`.",
+      msg = "Invalid type for `ontology`. (string starting by \"ontologies\" are a reserved
+      term)",
+      argcheck = check
+    )
+  else if(!is.character(sub) ||
+      !sub %in% c(NA, NA_character_, "classes", "properties"))
+    addError(
+      msg = "Invalid value for `sub`.",
+      argcheck = check
+    )
+  else if(!is.character(sub.level) ||
+      !sub.level %in% c(NA, NA_character_, "roots"))
+    addError(
+      msg = "Invalid value for `sub.level`.",
       argcheck = check
     )
   if(!is.character(output.mode) ||
@@ -69,6 +89,24 @@ accessOntology <- function(
     )
 
   # Correction ====
+  if(is.na(ontology))
+    ontology <- NULL
+  else {
+    if(is.na(sub))
+      ontology <- paste0("/", ontology)
+    else if(sub == "classes") {
+      if(is.na(sub.level))
+        ontology <- paste0(ontology, "/classes")
+      else if(sub.level == "root")
+        ontology <- paste0(ontology, "/classes/roots")
+    }
+    else if(sub == "properties") {
+      if(is.na(sub.level))
+        ontology <- paste0(ontology, "/properties")
+      else if(sub.level == "root")
+        ontology <- paste0(ontology, "/properties/roots")
+    }
+  }
   if(length(output.mode) > 1){
     output.mode <- output.mode[1]
     addWarning(
@@ -98,12 +136,14 @@ accessOntology <- function(
     api.key,
     paste0(
       "https://terminology.metadatacenter.org/bioportal/ontologies/",
-      ontology,
-      "/classes",
+      ontology
     ),
-    query = list(
-      page = page,
-      page_size = page.size
+    query = ifelse(is.null(ontology),
+      list(
+        page = page,
+        page_size = page.size
+      ),
+      NULL
     ),
     output.mode = output.mode
   )
