@@ -24,3 +24,18 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
   else
     return(result$content)
 }
+
+
+# checkLength <- function(...){
+#   args <- as.list(...)
+#
+#   sapply(args, function(arg){
+#     if(length(get(arg)) > 1){
+#       assign(arg, get(arg)[1])
+#       addWarning(
+#         msg = "`",arg,"` argument had length > 1: only the first element is used.",
+#         argcheck = check
+#       )
+#     }
+#   })
+# }

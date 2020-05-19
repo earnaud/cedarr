@@ -107,27 +107,15 @@ accessOntology <- function(
         ontology <- paste0(ontology, "/properties/roots")
     }
   }
-  if(length(output.mode) > 1){
-    output.mode <- output.mode[1]
-    addWarning(
-      msg = "`output.mode` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
-  if(length(page) > 1){
-    page <- page[1]
-    addWarning(
-      msg = "`page` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
-  if(length(page.size) > 1){
-    page.size <- page.size[1]
-    addWarning(
-      msg = "`page.size` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
+  sapply(c("output.mode", "page","page.size"), function(arg){
+    if(length(get(arg)) > 1){
+      assign(arg, get(arg)[1])
+      addWarning(
+        msg = "`",arg,"` argument had length > 1: only the first element is used.",
+        argcheck = check
+      )
+    }
+  })
 
   finishArgCheck(check)
 
@@ -151,5 +139,3 @@ accessOntology <- function(
   # Output ====
   return(result)
 }
-
-

@@ -36,7 +36,7 @@
 #' View(result)
 #'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
-query <- function(
+search <- function(
   api.key,
   query,
   sources = NA_character_,
@@ -104,41 +104,15 @@ query <- function(
   # Correction ====
   if(is.na(sources))
     sources <- NULL
-  if(length(scope) > 1){
-    scope <- scope[1]
-    addWarning(
-      msg = "`scope` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
-  if(length(suggest) > 1){
-    suggest <- suggest[1]
-    addWarning(
-      msg = "`suggest` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
-  if(length(output.mode) > 1){
-    output.mode <- output.mode[1]
-    addWarning(
-      msg = "`output.mode` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
-  if(length(page) > 1){
-    page <- page[1]
-    addWarning(
-      msg = "`page` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
-  if(length(page.size) > 1){
-    page.size <- page.size[1]
-    addWarning(
-      msg = "`page.size` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
+  sapply(c("scope","suggest","output.mode", "page","page.size"), function(arg){
+    if(length(get(arg)) > 1){
+      assign(arg, get(arg)[1])
+      addWarning(
+        msg = "`",arg,"` argument had length > 1: only the first element is used.",
+        argcheck = check
+      )
+    }
+  })
 
   finishArgCheck(check)
 
