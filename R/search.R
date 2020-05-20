@@ -1,30 +1,50 @@
 #' Search values in CEDAR
 #'
-#' Function to query terms, classes or retrieve full ontologies from the CEDAR terminology
-#' metadata center. (https://terminology.metadatacenter.org/api/#/).
+#' Function to query terms, classes or retrieve full ontologies
+#' from the CEDAR terminology metadata center.
+#' (https://terminology.metadatacenter.org/api/#/).
 #'
 #  INTEREST ARGUMENTS
-#' @param api.key character. An API Key is required to access any API call. It is used within {cedarr}
-#' as a header for http requests. An API key is linked to a CEDAR account (https://cedar.metadatacenter.org/profile)
+#' @param api.key character. An API Key is required to access any
+#' API call. It is used within {cedarr} as a header for http
+#' requests. An API key is linked to a CEDAR account
+#' (https://cedar.metadatacenter.org/profile)
 #' @param query character. Input query as a text.
-#' @param sources character. Either value sets collection names or ontologies names in which to get
-#' the results of the query.
-#' @param scope character. Which search scopes shall be investigated. Accepted values are 1-length vector:
-#' "all" (default), "classes", "value_sets", "values".
-#' @param output.mode character. "full" will return the whole response object (from {httr}) or "content" will
-#' fetch the interest values from the response object. Getting the whole object might be interesting to
-#' have a look at system metadata, or in case of error to debug the connection. (defaults to "content")
-#' @param suggest logical. Will perform a search specifically geared towards type-ahead suggestions
-#' (defaults to FALSE).
-#TODO @param source character. Ontology for which the subtree search will be performed. It
-# must be URL encoded.
-#TODO @param subtree_root_id character. Class identifier that limits the search to the branch rooted on that class.
-# It must be URL encoded.
-#TODO @param maxDepth integer. Subtree depth.
-#' @param page integer. Index of the page to be returned (defaults to 1st page).
-#' @param page.size integer. Number of results per page, capped at 50. (defaults to 50).
+#' @param sources character. Either value sets collection names
+#' or ontologies names in which to get the results of the query.
+#' @param scope character. Which search scopes shall be
+#' investigated. Accepted values are 1-length vector: "all"
+#' (default), "classes", "value_sets", "values".
+#' @param output.mode character. "full" will return the whole
+#' response object (from {httr}) or "content" will fetch the
+#' interest values from the response object. Getting the whole
+#' object might be interesting to have a look at system metadata,
+#' or in case of error to debug the connection. (defaults to
+#' "content")
+#' @param suggest logical. Will perform a search specifically
+#' geared towards type-ahead suggestions (defaults to FALSE).
+#' @param subtree.root.id character. URL for the class identifier
+#' that limits the search to the branch rooted on that class.
+#' @param source character. URL for the ontology for which the
+#' subtree search will be performed. Not evaluated if
+#' `subtree.root.id` is not provided.
+#' @param maxDepth integer. Subtree depth.Not evaluated if
+#' `subtree.root.id` is not provided.
+#' @param page integer. Index of the page to be returned
+#' (defaults to 1st page).
+#' @param page.size integer. Number of results per page, capped
+#' at 50. (defaults to 50).
 #'
-#' @example
+#' @return
+#'
+#' If `output.mode = "full"`, the whole http response object (see httr::response).
+#' It is structured as a list with response metadata wrapping the `content` item
+#' which contains the wanted result.
+#'
+#' If `output.mode = "content"`, the `content` item is directly returned, containing
+#' database metadata and the interesting information in the `collection` subitem.
+#'
+#' @examples
 #' my.api.key <- readline()
 #'
 #' result <- cedarr::query(
@@ -43,12 +63,15 @@ search <- function(
   scope = "all",
   suggest = FALSE,
   output.mode = "content",
+  subtree.root.id = NA_character_,
+  subtree.source = NA_character_,
+  maxDepth = 1,
   page = 1,
   page.size= 50
 ){
   # Missing ====
   if(missing(api.key))
-    stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
+    stop("No API key provided: see https://cedar.metadatacenter.org/profile.")
   if(missing(query))
     stop("No query provided.")
 
@@ -57,7 +80,7 @@ search <- function(
 
   if(!is.character(api.key))
     addError(
-      msg = "Invalid API key: must be a length-one character.
+      msg = "Invalid API key: must be a length-one character.\
       See https://cedar.metadatacenter.org/profile.",
       argcheck = check
     )
@@ -75,7 +98,8 @@ search <- function(
       length(scope) == 0 ||
       !scope %in% c("all", "classes", "value_sets", "values"))
     addError(
-      msg = "Invalid value for `scope`. Must be one of: 'all', 'classes', 'value_sets', 'values'.",
+      msg = "Invalid value for `scope`. Must be one of:
+      'all', 'classes', 'value_sets', 'values'.",
       argcheck = check
     )
   if(!is.logical(suggest) || (!isTRUE(suggest) && !isFALSE(suggest)))
@@ -90,6 +114,25 @@ search <- function(
       msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
       argcheck = check
     )
+  if((!is.character(subtree.root.id) && !is.na(subtree.root.id)))
+    addError(
+      msg = "Invalid value for `subtree.root.id`. Must be an URL for the target
+      Class identifier.",
+      argcheck = check
+    )
+  else {
+    if(isFALSE(is.character(subtree.source) || is.na(subtree.source)))
+      addError(
+        msg = "Invalid value for `subtree.source`. Must be an URL for the
+        ontology containing `subtree.root.id` class.",
+        argcheck = check
+      )
+    if(isFALSE(is.integer(as.integer(maxDepth)) && as.integer(maxDepth) > 0))
+      addError(
+        msg = "Invalid value for `maxDepth`. Must be a positive integer.",
+        argcheck = check
+      )
+  }
   if(!is.numeric(page) || page == 0)
     addError(
       msg = "Invalid value for `page`.",
@@ -104,15 +147,19 @@ search <- function(
   # Correction ====
   if(is.na(sources))
     sources <- NULL
-  sapply(c("scope","suggest","output.mode", "page","page.size"), function(arg){
+  sapply(c("scope","suggest","output.mode", "subtree.root.id", "subtree.source",
+    "maxDepth", "page","page.size"), function(arg){
     if(length(get(arg)) > 1){
       assign(arg, get(arg)[1])
       addWarning(
-        msg = "`",arg,"` argument had length > 1: only the first element is used.",
+        msg="`",arg,"` argument had length>1: only the first element is used.",
         argcheck = check
       )
     }
   })
+  if(!is.na(subtree.root.id)){
+    maxDepth <- as.integer(maxDepth)
+  }
 
   finishArgCheck(check)
 

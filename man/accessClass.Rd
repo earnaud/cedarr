@@ -18,10 +18,30 @@ accessOntology()).}
 \item{sub}{character. Class sub-item ID to retrieve. Can be: NA, "tree", "children",
 "descendants" or "parents".}
 
-\item{output.mode}{character. "full" will return the whole response object (from {httr}) or "content" will
-fetch the interest values from the response object. Getting the whole object might be interesting to
-have a look at system metadata, or in case of error to debug the connection. (defaults to "content")}
+\item{output.mode}{character. "full" will return the whole response object
+(from {httr}) or "content" will fetch the interest values from the response
+object. Getting the whole object might be interesting to have a look at system
+metadata, or in case of error to debug the connection. (defaults to "content")}
+}
+\value{
+If \code{output.mode = "full"}, the whole http response object (see httr::response).
+It is structured as a list with response metadata wrapping the \code{content} item
+which contains the wanted result.
+
+If \code{output.mode = "content"}, the \code{content} item is directly returned, containing
+database metadata and the interesting information in the \code{collection} subitem.
 }
 \description{
 Get all classes from a specific ontology (including both regular and provisional classes).
+}
+\examples{
+my.api.key <- readline()
+
+result <- cedarr::accessClass(
+  my.api.key,
+  "ENVO"
+)
+
+View(result)
+
 }

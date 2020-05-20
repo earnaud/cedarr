@@ -1,20 +1,35 @@
 #' Search values in CEDAR
 #'
-#' Get all classes from a specific ontology (including both regular and provisional classes).
+#' Get all classes from a specific ontology (including both regular
+#' and provisional classes).
 #'
 #  INTEREST ARGUMENTS
-#' @param api.key character. An API Key is required to access any API call. It is used within {cedarr}
-#' as a header for http requests. An API key is linked to a CEDAR account (https://cedar.metadatacenter.org/profile)
+#' @param api.key character. An API Key is required to access any
+#' API call. It is used within {cedarr} as a header for http
+#' requests. An API key is linked to a CEDAR account
+#' (https://cedar.metadatacenter.org/profile)
 #' @param ontology character. Ontology name to display.
-#' @param id character. Class ID to get, formatted as an URL (item `@id` in the result of
-#' accessOntology()).
-#' @param sub character. Class sub-item ID to retrieve. Can be: NA, "tree", "children",
-#' "descendants" or "parents".
-#' @param output.mode character. "full" will return the whole response object (from {httr}) or "content" will
-#' fetch the interest values from the response object. Getting the whole object might be interesting to
-#' have a look at system metadata, or in case of error to debug the connection. (defaults to "content")
+#' @param id character. Class ID to get, formatted as an URL
+#' (item `@id` in the result of accessOntology()).
+#' @param sub character. Class sub-item ID to retrieve. Can be:
+#' NA, "tree", "children", "descendants" or "parents".
+#' @param output.mode character. "full" will return the whole
+#' response object (from {httr}) or "content" will fetch the
+#' interest values from the response object. Getting the whole
+#' object might be interesting to have a look at system metadata,
+#' or in case of error to debug the connection. (defaults to
+#' "content")
 #'
-#' @example
+#' @return
+#'
+#' If `output.mode = "full"`, the whole http response object (see httr::response).
+#' It is structured as a list with response metadata wrapping the `content` item
+#' which contains the wanted result.
+#'
+#' If `output.mode = "content"`, the `content` item is directly returned, containing
+#' database metadata and the interesting information in the `collection` subitem.
+#'
+#' @examples
 #' my.api.key <- readline()
 #'
 #' result <- cedarr::accessClass(

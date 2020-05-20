@@ -14,6 +14,24 @@ as a header for http requests. An API key is linked to a CEDAR account (https://
 fetch the interest values from the response object. Getting the whole object might be interesting to
 have a look at system metadata, or in case of error to debug the connection. (defaults to "content")}
 }
+\value{
+If \code{output.mode = "full"}, the whole http response object (see httr::response).
+It is structured as a list with response metadata wrapping the \code{content} item
+which contains the wanted result.
+
+If \code{output.mode = "content"}, the \code{content} item is directly returned, containing
+database metadata and the interesting information in the \code{collection} subitem.
+}
 \description{
 Find all value set collections.
+}
+\examples{
+my.api.key <- readline()
+
+result <- cedarr::listVSCollections(
+  my.api.key,
+)
+
+View(result)
+
 }

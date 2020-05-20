@@ -1,21 +1,33 @@
 #' Search values in CEDAR
 #'
-#' Get all provisional classes in a particular ontology (including provisional value sets and provisional values).
-#' N.B. Since provisional classes are less stable than regular ones, the choice was made to write
-#' a separate method for those ones.
+#' Get all provisional classes in a particular ontology (including provisional
+#' value sets and provisional values). N.B. Since provisional classes are less
+#' stable than regular ones, the choice was made to write a separate method for
+#' those ones.
 #'
-#  INTEREST ARGUMENTS
-#' @param api.key character. An API Key is required to access any API call. It is used within {cedarr}
-#' as a header for http requests. An API key is linked to a CEDAR account (https://cedar.metadatacenter.org/profile)
-#' @param ontology character. Ontology name to display. In this context, ontology can be set to NA:
-#' this will list all provisional classes from CEDAR.
-#' @param output.mode character. "full" will return the whole response object (from {httr}) or "content" will
-#' fetch the interest values from the response object. Getting the whole object might be interesting to
-#' have a look at system metadata, or in case of error to debug the connection. (defaults to "content")
+#' @param api.key character. An API Key is required to access any API call. It
+#' is used within {cedarr} as a header for http requests. An API key is linked
+#' to a CEDAR account (https://cedar.metadatacenter.org/profile)
+#' @param ontology character. Ontology name to display. In this context, ontology
+#' can be set to NA: this will list all provisional classes from CEDAR.
+#' @param output.mode character. "full" will return the whole response object
+#' (from {httr}) or "content" will fetch the interest values from the response
+#' object. Getting the whole object might be interesting to have a look at system
+#' metadata, or in case of error to debug the connection. (defaults to "content")
 #' @param page integer. Index of the page to be returned (defaults to 1st page).
-#' @param page.size integer. Number of results per page, capped at 50. (defaults to 50).
+#' @param page.size integer. Number of results per page, capped at 50. (defaults
+#' to 50).
 #'
-#' @example
+#' @return
+#'
+#' If `output.mode = "full"`, the whole http response object (see httr::response).
+#' It is structured as a list with response metadata wrapping the `content` item
+#' which contains the wanted result.
+#'
+#' If `output.mode = "content"`, the `content` item is directly returned, containing
+#' database metadata and the interesting information in the `collection` subitem.
+#'
+#' @examples
 #' my.api.key <- readline()
 #'
 #' result <- cedarr::accessOntology(

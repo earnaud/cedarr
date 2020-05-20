@@ -1,3 +1,35 @@
+#' Access properties
+#'
+#' Function to access the CEDAR properties suite.
+#'
+#' @param api.key  character. An API Key is required to access any
+#' API call. It is used within {cedarr} as a header for http
+#' requests. An API key is linked to a CEDAR account
+#' (https://cedar.metadatacenter.org/profile)
+#' @param ontology character. Name of the ontology to query properties from.
+#' @param id character. Either NA to list properties, "roots" to get the root
+#' properties of the ontology or a property ID (at URL format), to find a
+#' precise property.
+#' @param sub character. Either NA to get the precise property alone, or one
+#' among "tree", "children", "descendants", "parents" to get related properties
+#' according to this value. Ignored if `id` is set to NA or "roots".
+#' @param output.mode character. "full" will return the whole
+#' response object (from {httr}) or "content" will fetch the
+#' interest values from the response object. Getting the whole
+#' object might be interesting to have a look at system metadata,
+#' or in case of error to debug the connection. (defaults to
+#' "content")
+#'
+#' @return
+#'
+#' If `output.mode = "full"`, the whole http response object (see httr::response).
+#' It is structured as a list with response metadata wrapping the `content` item
+#' which contains the wanted result.
+#'
+#' If `output.mode = "content"`, the `content` item is directly returned, containing
+#' database metadata and the interesting information in the `collection` subitem.
+#'
+#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 accessProperty <- function(
   api.key,
   ontology,

@@ -21,19 +21,22 @@ accessOntology(
 )
 }
 \arguments{
-\item{api.key}{character. An API Key is required to access any API call. It is used within {cedarr}
-as a header for http requests. An API key is linked to a CEDAR account (https://cedar.metadatacenter.org/profile)}
+\item{api.key}{character. An API Key is required to access any API call. It
+is used within {cedarr} as a header for http requests. An API key is linked
+to a CEDAR account (https://cedar.metadatacenter.org/profile)}
 
-\item{ontology}{character. Ontology name to display. In this context, ontology can be set to NA:
-this will list all provisional classes from CEDAR.}
+\item{ontology}{character. Ontology name to display. In this context, ontology
+can be set to NA: this will list all provisional classes from CEDAR.}
 
-\item{output.mode}{character. "full" will return the whole response object (from {httr}) or "content" will
-fetch the interest values from the response object. Getting the whole object might be interesting to
-have a look at system metadata, or in case of error to debug the connection. (defaults to "content")}
+\item{output.mode}{character. "full" will return the whole response object
+(from {httr}) or "content" will fetch the interest values from the response
+object. Getting the whole object might be interesting to have a look at system
+metadata, or in case of error to debug the connection. (defaults to "content")}
 
 \item{page}{integer. Index of the page to be returned (defaults to 1st page).}
 
-\item{page.size}{integer. Number of results per page, capped at 50. (defaults to 50).}
+\item{page.size}{integer. Number of results per page, capped at 50. (defaults
+to 50).}
 
 \item{sub}{character. What sub-items shall be retrieved: none, its classes or its
 properties? (resp. NA, "classes" or "properties")}
@@ -41,10 +44,46 @@ properties? (resp. NA, "classes" or "properties")}
 \item{sub.level}{character. At which level \code{sub} shall be fetched: all or only root?
 (resp. NA or "roots"). This parameter will only be evaluated if \code{sub} is filled.}
 }
+\value{
+If \code{output.mode = "full"}, the whole http response object (see httr::response).
+It is structured as a list with response metadata wrapping the \code{content} item
+which contains the wanted result.
+
+If \code{output.mode = "content"}, the \code{content} item is directly returned, containing
+database metadata and the interesting information in the \code{collection} subitem.
+
+If \code{output.mode = "full"}, the whole http response object (see httr::response).
+It is structured as a list with response metadata wrapping the \code{content} item
+which contains the wanted result.
+
+If \code{output.mode = "content"}, the \code{content} item is directly returned, containing
+database metadata and the interesting information in the \code{collection} subitem.
+}
 \description{
 Get all classes from a specific ontology (including both regular and provisional classes).
 
-Get all provisional classes in a particular ontology (including provisional value sets and provisional values).
-N.B. Since provisional classes are less stable than regular ones, the choice was made to write
-a separate method for those ones.
+Get all provisional classes in a particular ontology (including provisional
+value sets and provisional values). N.B. Since provisional classes are less
+stable than regular ones, the choice was made to write a separate method for
+those ones.
+}
+\examples{
+my.api.key <- readline()
+
+result <- cedarr::accessOntology(
+  my.api.key,
+  "ENVO"
+)
+
+View(result)
+
+my.api.key <- readline()
+
+result <- cedarr::accessOntology(
+  my.api.key,
+  "ENVO"
+)
+
+View(result)
+
 }
