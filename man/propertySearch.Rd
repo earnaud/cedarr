@@ -11,33 +11,37 @@ propertySearch(
   exact.match = FALSE,
   require.definitions = FALSE,
   output.mode = "content",
-  page = 1,
+  page.index = 1,
   page.size = 50
 )
 }
 \arguments{
-\item{api.key}{character. An API Key is required to access any API call. It is used within {cedarr}
-as a header for http requests. An API key is linked to a CEDAR account (https://cedar.metadatacenter.org/profile)}
+\item{api.key}{character. An API Key is required to access any
+API call. It is used within {cedarr} as a header for http
+requests. An API key is linked to a CEDAR account
+(https://cedar.metadatacenter.org/profile)}
 
 \item{query}{character. Input query as a text.}
 
-\item{sources}{character. Either value sets collection names or ontologies names in which to get
-the results of the query.}
+\item{sources}{character. Either value sets collection names or ontologies
+names in which to get the results of the query.}
 
-\item{exact.match}{logical Restricts results only to the exact matches of the query
-in the property id, label, or the generated label (a label, auto-generated from the id).
-(defaults to FALSE)}
+\item{exact.match}{logical Restricts results only to the exact matches of the
+query in the property id, label, or the generated label (a label, auto-generated
+from the id). (defaults to FALSE)}
 
-\item{output.mode}{character. "full" will return the whole response object (from {httr}) or "content" will
-fetch the interest values from the response object. Getting the whole object might be interesting to
-have a look at system metadata, or in case of error to debug the connection. (defaults to "content")}
+\item{output.mode}{character. "full" will return the whole response object
+(from {httr}) or "content" will fetch the interest values from the response
+object. Getting the whole object might be interesting to have a look at system
+metadata, or in case of error to debug the connection. (defaults to "content")}
 
-\item{page}{integer. Index of the page to be returned (defaults to 1st page).}
+\item{page.index}{integer. Index of the page to be returned (defaults to 1st page).}
 
-\item{page.size}{integer. Number of results per page, capped at 50. (defaults to 50).}
+\item{page.size}{integer. Number of results per page, capped at 50. (defaults
+to 50).}
 
-\item{require.definition}{logical. Filter results only to those that include definitions.
-(defaults to FALSE).}
+\item{require.definition}{logical. Filter results only to those that include
+definitions. (defaults to FALSE).}
 }
 \value{
 If \code{output.mode = "full"}, the whole http response object (see httr::response).

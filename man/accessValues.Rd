@@ -6,8 +6,8 @@
 \usage{
 accessValues(
   api.key,
-  vs.collection = NA_character_,
-  id = NA_character_,
+  vs.collection,
+  id,
   sub = NA_character_,
   output.mode = "content",
   page = 1,
@@ -15,12 +15,30 @@ accessValues(
 )
 }
 \arguments{
-\item{api.key}{character. An API Key is required to access any API call. It is used within {cedarr}
-as a header for http requests. An API key is linked to a CEDAR account (https://cedar.metadatacenter.org/profile)}
+\item{api.key}{character. An API Key is required to access any API call. It
+is used within {cedarr} as a header for http requests. An API key is linked
+to a CEDAR account (https://cedar.metadatacenter.org/profile)}
 
-\item{output.mode}{character. "full" will return the whole response object (from {httr}) or "content" will
-fetch the interest values from the response object. Getting the whole object might be interesting to
-have a look at system metadata, or in case of error to debug the connection. (defaults to "content")}
+\item{vs.collection}{character. A VS collection id.}
+
+\item{id}{character. A value ID in a value sets from the VS collection.}
+
+\item{sub}{character. A sub-item to fetch from the value. Not
+evaluated if \code{id} is set to NA. Else, can be NA, "value-set", "tree"
+or "all-values". "value-set" allows to get the value-set the value
+belongs to.}
+
+\item{output.mode}{character. "full" will return the whole
+response object (from {httr}) or "content" will fetch the
+interest values from the response object. Getting the whole
+object might be interesting to have a look at system metadata,
+or in case of error to debug the connection. (defaults to
+"content")}
+
+\item{page}{integer. Index of the page to be returned (defaults to 1st page).}
+
+\item{page.size}{integer. Number of results per page, capped at 50. (defaults
+to 50).}
 }
 \value{
 If \code{output.mode = "full"}, the whole http response object (see httr::response).
@@ -33,12 +51,27 @@ database metadata and the interesting information in the \code{collection} subit
 \description{
 Find value by id.
 }
+\details{
+This function matches the following queries from the Swagger UI
+(https://terminology.metadatacenter.org/api/#/):
+
+\itemize {
+\item {\verb{/vs-collections/\{vs_collection\}/values/\{id\}}}
+\item {\verb{/vs-collections/\{vs_collection\}/values/\{id\}/tree}}
+\item {\verb{/vs-collections/\{vs_collection\}/values/\{id\}/all-values}}
+\item {\verb{/vs-collections/\{vs_collection\}/values/\{id\}/value-set}}
+}
+
+These differents requests are differenciated by the \code{id} and \code{sub}
+arguments.
+}
 \examples{
 my.api.key <- readline()
 
 result <- cedarr::accessValues(
   my.api.key,
-
+  vs.collection = "CEDARVS",
+  id = ???
 )
 
 View(result)

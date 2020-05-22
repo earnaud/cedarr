@@ -7,8 +7,7 @@
 checkLength(..., check, env = .GlobalEnv)
 }
 \arguments{
-\item{...}{list. A list of arguments. Length of each item in this list will be
-shortened to 1.}
+\item{...}{list. A list of arguments to check for length.}
 
 \item{check}{ArgCheck. An ArgCheck object from package {ArgumentCheck}.}
 

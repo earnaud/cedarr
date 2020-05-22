@@ -1,6 +1,6 @@
-#' Search values in CEDAR
+#' Access Ontologies
 #'
-#' Get all classes from a specific ontology (including both regular and provisional classes).
+#' Access ontologies by id and list their content.
 #'
 #' @param api.key  character. An API Key is required to access any
 #' API call. It is used within {cedarr} as a header for http
@@ -18,10 +18,40 @@
 #' object might be interesting to have a look at system metadata,
 #' or in case of error to debug the connection. (defaults to
 #' "content")
-#' @param page integer. Index of the page to be returned (defaults to 1st page).
+#' @param page.index integer. Index of the page to be returned (defaults to 1st page).
 #' @param page.size integer. Number of results per page, capped at 50. (defaults to 50).
 #'
+#' @details
+#'
+#' This function matches the following queries from the Swagger UI
+#' (https://terminology.metadatacenter.org/api/#/):
+#'
+#' \itemize {
+#'   \item {`/ontologies`}
+#'   \item {`/ontologies/{ontology}`}
+#'   \item {`/ontologies/{ontology}/classes`}
+#'   \item {`/ontologies/{ontology}/classes/roots`}
+#'   \item {`/ontologies/{ontology}/properties`}
+#'   \item {`/ontologies/{ontology}/properties/roots`}
+#' }
+#'
+#' These differents requests are differenciated by the `item` and `sub`
+#' arguments. The requests for `item = "properties"` are identical to some
+#' available in `accessProperty()`.
+#'
 #' @return
+#'
+#'\itemize {
+#'  \item {If no ontology ID is provided: returns a list of all ontologies registered in
+#'  CEDAR.}
+#'  \item{If an ontology ID is provided: returns an entry for this ontology.}
+#'  \item{If an ontology ID is provided with `item` = "classes": returns either
+#'  a list of the classes in this ontology, or at the root of this ontology if
+#'  provided with `sub` = "roots".}
+#'  \item{If an ontology ID is provided with `item` = "properties": returns either
+#'  a list of the properties in this ontology, or at the root of this ontology if
+#'  provided with `sub` = "roots".}
+#'}
 #'
 #' If `output.mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
@@ -33,9 +63,12 @@
 #' @examples
 #' my.api.key <- readline()
 #'
+#' # Find the root classes of ENVO
 #' result <- cedarr::accessOntology(
 #'   my.api.key,
-#'   "ENVO"
+#'   "ENVO",
+#'   item = "classes",
+#'   sub = "roots"
 #' )
 #'
 #' View(result)
@@ -47,7 +80,7 @@ accessOntology <- function(
   item = NA_character_,
   sub = NA_character_,
   output.mode = "content",
-  page = 1,
+  page.index = 1,
   page.size = 50
 ){
   # Missing ====
@@ -57,76 +90,57 @@ accessOntology <- function(
   # Invalid ====
   check <- newArgCheck()
 
-  if(!is.character(api.key))
-    addError(
-      msg = "Invalid API key: must be a length-one character.
-      See https://cedar.metadatacenter.org/profile.",
-      argcheck = check
-    )
-  if(!is.character(ontology) || !is.na(ontology) || grepl("^ontologies", ontology))
+  check <- constantCheck(
+    c("api.key", "output.mode", "page.index", "page.size"),
+    check = check, env = environment()
+  )
+
+  if(isFALSE(is.character(ontology) || is.na(ontology)) || grepl("^ontologies", ontology))
     addError(
       msg = "Invalid type for `ontology`. (string starting by \"ontologies\" are a reserved
       term)",
       argcheck = check
     )
-  else if(!is.character(item) ||
-      !item %in% c(NA, NA_character_, "classes", "properties"))
+  else if(isFALSE(is.character(item) || is.na(item)) ||
+      !item %in% c(
+        NA, NA_character_,
+        "class", "classe", "classes",
+        "propert", "property", "properties"))
     addError(
       msg = "Invalid value for `item`.",
       argcheck = check
     )
   else if(!is.character(sub) ||
-      !sub %in% c(NA, NA_character_, "roots"))
+      !sub %in% c(NA, NA_character_, "root", "roots"))
     addError(
       msg = "Invalid value for `sub`.",
       argcheck = check
     )
-  if(!is.character(output.mode) ||
-      length(output.mode) == 0 ||
-      !output.mode %in% c("full", "content"))
-    addError(
-      msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
-      argcheck = check
-    )
-  if(!is.numeric(page) || page == 0)
-    addError(
-      msg = "Invalid value for `page`.",
-      argcheck = check
-    )
-  if(!is.numeric(page.size) || page.size == 0)
-    addError(
-      msg = "Invalid value for `page.size`.",
-      argcheck = check
-    )
 
   # Correction ====
+  check <- checkLength(
+    c("api.key", "ontology", "item", "sub", "output.mode", "page.index","page.size"),
+    check = check, env = environment()
+  )
+
   if(is.na(ontology))
     ontology <- NULL
   else {
     if(is.na(item))
       ontology <- paste0("/", ontology)
-    else if(item == "classes") {
+    else if(grepl("class", item)) {
       if(is.na(sub))
         ontology <- paste0(ontology, "/classes")
-      else if(sub == "root")
+      else if(grepl("root", sub))
         ontology <- paste0(ontology, "/classes/roots")
     }
-    else if(item == "properties") {
+    else if(grepl("propert", item)) {
       if(is.na(sub))
         ontology <- paste0(ontology, "/properties")
-      else if(sub == "root")
+      else if(grepl("root", sub))
         ontology <- paste0(ontology, "/properties/roots")
     }
   }
-  sapply(c("output.mode", "page","page.size"), function(arg){
-    if(length(get(arg)) > 1){
-      assign(arg, get(arg)[1])
-      addWarning(
-        msg = "`",arg,"` argument had length > 1: only the first element is used.",
-        argcheck = check
-      )
-    }
-  })
 
   finishArgCheck(check)
 
@@ -139,7 +153,7 @@ accessOntology <- function(
         ontology
       ),
       query = list(
-        page = page,
+        page = page.index,
         page_size = page.size
       ),
       output.mode = output.mode

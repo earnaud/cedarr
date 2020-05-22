@@ -1,17 +1,16 @@
-#' Search values in CEDAR
+#' Access Classes
 #'
-#' Get all classes from a specific ontology (including both regular
-#' and provisional classes).
+#' Access classes (including both regular and provisional) by ontology and class
+#' id.
 #'
-#  INTEREST ARGUMENTS
 #' @param api.key character. An API Key is required to access any
 #' API call. It is used within {cedarr} as a header for http
 #' requests. An API key is linked to a CEDAR account
 #' (https://cedar.metadatacenter.org/profile)
 #' @param ontology character. Ontology name to display.
-#' @param id character. Class ID to get, formatted as an URL
-#' (item `@id` in the result of accessOntology()).
-#' @param sub character. Class sub-item ID to retrieve. Can be:
+#' @param id character. Class ID to get, formatted as an URL.
+#' (item `@id` in the result of accessOntology())
+#' @param sub character. Class content ID to retrieve. Can be:
 #' NA, "tree", "children", "descendants" or "parents".
 #' @param output.mode character. "full" will return the whole
 #' response object (from {httr}) or "content" will fetch the
@@ -20,7 +19,32 @@
 #' or in case of error to debug the connection. (defaults to
 #' "content")
 #'
+#' @details
+#'
+#' This function matches the following queries from the Swagger UI
+#' (https://terminology.metadatacenter.org/api/#/):
+#'
+#' \itemize {
+#'   \item {`/ontologies/{ontology}/classes/{id}`}
+#'   \item {`/ontologies/{ontology}/classes/{id}/tree`}
+#'   \item {`/ontologies/{ontology}/classes/{id}/children`}
+#'   \item {`/ontologies/{ontology}/classes/{id}/descendants`}
+#'   \item {`/ontologies/{ontology}/classes/{id}/parents`}
+#' }
+#'
+#' These differents requests are differenciated by the `sub` argument.
+#'
 #' @return
+#'
+#' Setting `sub` to NA will retrieve the class item such as it is presented in
+#' the return of `accessOntology()` (item `@id`).
+#' Setting `sub` to "tree" will return the roots of the ontology in a data.frame.
+#' Setting `sub` to "children" will return all of the descendants from the class
+#' that happen to be one level below the class itself in its ontology.
+#' Setting `sub` to "descendants" will return all of the descendants from the
+#' class, whatever is their level below the target class.
+#' Setting `sub` to "parents" will return the class coming before the target
+#' class in its ontology.
 #'
 #' If `output.mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
@@ -32,19 +56,22 @@
 #' @examples
 #' my.api.key <- readline()
 #'
+#' # Fetch 'biome' class in ENVO
 #' result <- cedarr::accessClass(
 #'   my.api.key,
-#'   "ENVO"
+#'   "ENVO",
+#'   "http://purl.obolibrary.org/obo/ENVO_00000428"
 #' )
 #'
 #' View(result)
 #'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom utils URLencode
 accessClass <- function(
   api.key,
   ontology,
   id,
-  sub,
+  sub = NA_character_,
   output.mode = "content"
 ){
   # Missing ====
@@ -52,18 +79,17 @@ accessClass <- function(
     stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
   if(missing(ontology))
     stop("No ontology ID provided.")
-  if(missing(class))
+  if(missing(id))
     stop("No class ID provided.")
 
   # Invalid ====
   check <- newArgCheck()
 
-  if(!is.character(api.key))
-    addError(
-      msg = "Invalid API key: must be a length-one character.
-      See https://cedar.metadatacenter.org/profile.",
-      argcheck = check
-    )
+  check <- constantCheck(
+    c("api.key", "output.mode"),
+    check = check, env = environment()
+  )
+
   if(!is.character(ontology) || is.na(ontology))
     addError(
       msg = "Invalid type for `ontology`.",
@@ -74,35 +100,26 @@ accessClass <- function(
       msg = "Invalid type for `id`.",
       argcheck = check
     )
-  if(!is.character(sub) ||
-      !is.na(sub) ||
-      (is.character(sub) && !sub %in% c("tree", "children","descendants","parents")))
+  if(isFALSE(is.character(sub) || is.na(sub)) ||
+      (is.character(sub) && !is.na(sub) && !sub %in% c("tree", "children","descendants","parents")))
     addError(
       msg = "Invalid type for `sub`.",
       argcheck = check
     )
-  if(!is.character(output.mode) ||
-      length(output.mode) == 0 ||
-      !output.mode %in% c("full", "content"))
-    addError(
-      msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
-      argcheck = check
-    )
 
   # Correction ====
-  if(length(output.mode) > 1){
-    output.mode <- output.mode[1]
-    addWarning(
-      msg = "`output.mode` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
+  check <- checkLength(
+    c("api.key", "output.mode", "id", "sub", "ontology"),
+    check = check, env = environment()
+  )
+
+  id <- URLencode(id, reserved = TRUE)
+
   if(is.na(sub))
     sub <- NULL
   else if(is.character(sub) &&
       sub %in% c("tree", "children","descendants","parents")){
     sub <- paste0("/", sub)
-    message("Fetching sub-item: ", sub, " for class: ", id)
   }
 
   finishArgCheck(check)

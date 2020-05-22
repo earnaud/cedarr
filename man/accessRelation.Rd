@@ -28,7 +28,19 @@ containing database metadata and the interesting information in the
 \code{collection} subitem.
 }
 \description{
-Find provisional relation by id.
+Find provisional relation by id. DISCLAIMER: at current development stage of
+the API, this function is not operational (empty content) !
+}
+\details{
+DISCLAIMER: at current development stage of the API, this function is not
+operational !
+
+This function matches the following queries from the Swagger UI
+(https://terminology.metadatacenter.org/api/#/):
+
+\itemize {
+\item {\verb{/relations/\{id\}}}
+}
 }
 \examples{
 my.api.key <- readline()

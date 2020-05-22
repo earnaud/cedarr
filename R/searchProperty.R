@@ -20,11 +20,22 @@
 #' (from {httr}) or "content" will fetch the interest values from the response
 #' object. Getting the whole object might be interesting to have a look at system
 #' metadata, or in case of error to debug the connection. (defaults to "content")
-#' @param page integer. Index of the page to be returned (defaults to 1st page).
+#' @param page.index integer. Index of the page to be returned (defaults to 1st page).
 #' @param page.size integer. Number of results per page, capped at 50. (defaults
 #' to 50).
 #'
+#' @details
+#'
+#' This function matches the following query from the Swagger UI
+#' (https://terminology.metadatacenter.org/api/#/):
+#'
+#' \itemize {
+#'   \item {`/property_search`}
+#' }
+#'
 #' @return
+#'
+#' A search result with the properties corresponding to the query.
 #'
 #' If `output.mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
@@ -35,6 +46,8 @@
 #'
 #' @examples
 #' my.api.key <- readline()
+#'
+#' # Search for a property matching "has curation status"
 #'
 #' result <- cedarr::query(
 #'   my.api.key,
@@ -52,7 +65,7 @@ propertySearch <- function(
   exact.match = FALSE,
   require.definitions = FALSE,
   output.mode = "content",
-  page = 1,
+  page.index = 1,
   page.size= 50
 ){
   # Missing ====
@@ -64,12 +77,11 @@ propertySearch <- function(
   # Invalid ====
   check <- newArgCheck()
 
-  if(!is.character(api.key))
-    addError(
-      msg = "Invalid API key: must be a length-one character.
-      See https://cedar.metadatacenter.org/profile.",
-      argcheck = check
-    )
+  check <- constantCheck(
+    c("api.key", "output.mode", "page.index", "page.size"),
+    check = check, env = environment()
+  )
+
   if(!is.character(query) || query == "")
     addError(
       msg = "Invalid query: must be at least one word length.",
@@ -92,36 +104,16 @@ propertySearch <- function(
       msg = "Invalid value for `require.definitions`. Must be TRUE or FALSE.",
       argcheck = check
     )
-  if(!is.character(output.mode) ||
-      length(output.mode) == 0 ||
-      !output.mode %in% c("full", "content"))
-    addError(
-      msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
-      argcheck = check
-    )
-  if(!is.numeric(page) || page == 0)
-    addError(
-      msg = "Invalid value for `page`.",
-      argcheck = check
-    )
-  if(!is.numeric(page.size) || page.size == 0)
-    addError(
-      msg = "Invalid value for `page.size`.",
-      argcheck = check
-    )
 
   # Correction ====
   if(is.na(sources))
     sources <- NULL
-  sapply(c("exact.match","require.definitions","output.mode", "page","page.size"), function(arg){
-    if(length(get(arg)) > 1){
-      assign(arg, get(arg)[1])
-      addWarning(
-        msg = "`",arg,"` argument had length > 1: only the first element is used.",
-        argcheck = check
-      )
-    }
-  })
+
+  check <- checkLength(
+    c("api.key", "exact.match","require.definitions","output.mode", "page.index",
+      "page.size"),
+    check = check, env = environment()
+  )
 
   finishArgCheck(check)
 
@@ -134,7 +126,7 @@ propertySearch <- function(
       exact_match = exact.match,
       require_definitions = require.definitions,
       suggest = suggest,
-      page = page,
+      page = page.index,
       page_size = page.size
     ),
     output.mode = output.mode

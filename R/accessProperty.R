@@ -1,4 +1,4 @@
-#' Access properties
+#' Access Properties
 #'
 #' Function to access the CEDAR properties suite.
 #'
@@ -12,7 +12,7 @@
 #' precise property.
 #' @param sub character. Either NA to get the precise property alone, or one
 #' among "tree", "children", "descendants", "parents" to get related properties
-#' according to this value. Ignored if `id` is set to NA or "roots".
+#' according to this value. Not evaluated if `id` is set to NA or "roots".
 #' @param output.mode character. "full" will return the whole
 #' response object (from {httr}) or "content" will fetch the
 #' interest values from the response object. Getting the whole
@@ -20,7 +20,35 @@
 #' or in case of error to debug the connection. (defaults to
 #' "content")
 #'
+#' @details
+#'
+#' This function matches the following queries from the Swagger UI
+#' (https://terminology.metadatacenter.org/api/#/):
+#'
+#' \itemize {
+#'   \item {`/ontologies/{ontology}/properties`}
+#'   \item {`/ontologies/{ontology}/properties/roots`}
+#'   \item {`/ontologies/{ontology}/properties/{id}`}
+#'   \item {`/ontologies/{ontology}/properties/{id}/tree`}
+#'   \item {`/ontologies/{ontology}/properties/{id}/children`}
+#'   \item {`/ontologies/{ontology}/properties/{id}/descendants`}
+#'   \item {`/ontologies/{ontology}/properties/{id}/parents`}
+#' }
+#'
+#' These differents requests are differenciated by the `id` and `sub`
+#' arguments.
+#'
 #' @return
+#'
+#' \itemize {
+#'   \item{If no property ID is provided: list all of the properties, or all the
+#'   ontology's root properties if `sub` = "roots".}
+#'   \item{If a property ID is provided: an entry for the corresponding property,
+#'   or the roots properties if `sub` = "tree", the properties defined at the
+#'   level under the target property if `sub` = "children", the lowest properties
+#'   defined under the target property if `sub` = "descendants" or the properties
+#'   defined previously to the one targeted if `sub` = "parents".}
+#' }
 #'
 #' If `output.mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
@@ -29,7 +57,34 @@
 #' If `output.mode = "content"`, the `content` item is directly returned, containing
 #' database metadata and the interesting information in the `collection` subitem.
 #'
+#' @examples
+#' my.api.key <- readline()
+#'
+#' # Query 1: list the roots properties in ENVO
+#'
+#' result1 <- cedarr::accessProperty(
+#'   my.api.key,
+#'   "ENVO",
+#'   id = "roots",
+#'   sub = "smurf" # ignored
+#' )
+#'
+#' View(result1)
+#'
+#' # Query 2: get the parents properties for "alternative term" in ENVO
+#'
+#' result2 <- cedarr::accessProperty(
+#'   my.api.key,
+#'   "ENVO",
+#'   id = "http://purl.obolibrary.org/obo/IAO_0000118",
+#'   sub = "parents"
+#' )
+#'
+#' View(result2)
+#'
+#'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom utils URLencode
 accessProperty <- function(
   api.key,
   ontology,
@@ -46,54 +101,56 @@ accessProperty <- function(
   # Invalid ====
   check <- newArgCheck()
 
-  if(!is.character(api.key))
-    addError(
-      msg = "Invalid API key: must be a length-one character.
-      See https://cedar.metadatacenter.org/profile.",
-      argcheck = check
-    )
+  check <- constantCheck(
+    c("api.key", "output.mode"),
+    check = check, env = environment()
+  )
+
   if(!is.character(ontology) || is.na(ontology))
     addError(
-      msg = "Invalid type for `ontology`. (string starting by \"ontologies\" are a reserved
-      term)",
+      msg = "Invalid type for `ontology`.",
       argcheck = check
     )
-  if(!is.character(id) && !is.na(id))
+  if(isFALSE(is.character(id) || is.na(id)))
     addError(
-      msg = "Invalid value for `sub`.",
+      msg = "Invalid type for `id`.",
+      argcheck = check
+    )
+  else if(isFALSE(
+    id %in% c("root", "roots") ||
+      grepl("^http", id)
+  ))
+    addError(
+      msg = "Invalid value for `id`.",
       argcheck = check
     )
   else if(is.character(id) &&
-      id != "roots" &&
-      !sub %in% c(NA, NA_character_, "tree", "children", "descendants", "parents")) {
-        addError(
-          msg = "Invalid value for `sub`.",
-          argcheck = check
-        )
-  }
-  if(!is.character(output.mode) ||
-      length(output.mode) == 0 ||
-      !output.mode %in% c("full", "content"))
-    addError(
-      msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
-      argcheck = check
-    )
-
-  # Correction ====
-  sapply(c("api.key", "ontology", "output.mode", "id", "sub"), function(arg){
-    if(length(get(arg)) > 1){
-      assign(arg, get(arg)[1])
-      addWarning(
-        msg = "`",arg,"` argument had length > 1: only the first element is used.",
+      id != "roots"){
+    if(isFALSE(is.character(sub) || is.na(sub)))
+      addError(
+        msg = "Invalid type for `sub`.",
         argcheck = check
       )
-    }
-  })
+    else if(!sub %in% c(NA, NA_character_, "tree", "child", "children",
+      "descendant", "descendants", "parent", "parents"))
+      addError(
+        msg = "Invalid value for `sub`.",
+        argcheck = check
+      )
+  }
+
+  # Correction ====
+  check <- checkLength(
+    c("api.key", "ontology", "output.mode", "id", "sub"),
+    check = check, env = environment()
+  )
+
   if(is.na(id))
     id <- NULL
-  else if(id == "roots")
+  else if(id %in% c("root", "roots"))
     id <- "/roots"
   else {
+    id <- URLencode(id, reserved = TRUE)
     if(is.na(sub))
       sub <- NULL
     id <- paste0(c("", id, sub), collapse = "/")
@@ -109,13 +166,6 @@ accessProperty <- function(
       ontology,
       "/properties",
       id
-    ),
-    query = ifelse(is.null(ontology),
-      list(
-        page = page,
-        page_size = page.size
-      ),
-      NULL
     ),
     output.mode = output.mode
   )

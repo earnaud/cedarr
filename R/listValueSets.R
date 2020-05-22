@@ -1,8 +1,7 @@
-#' Search values in CEDAR
+#' List value sets and value sets collections
 #'
-#' Find all value sets.
+#' Find all value sets or value sets collections.
 #'
-#  INTEREST ARGUMENTS
 #' @param api.key character. An API Key is required to access any
 #' API call. It is used within {cedarr} as a header for http
 #' requests. An API key is linked to a CEDAR account
@@ -16,21 +15,16 @@
 #'
 #' @return
 #'
-#' If `output.mode = "full"`, the whole http response object (see httr::response).
-#' It is structured as a list with response metadata wrapping the `content` item
-#' which contains the wanted result.
-#'
-#' If `output.mode = "content"`, the `content` item is directly returned, containing
-#' database metadata and the interesting information in the `collection` subitem.
+#' An exhaustive list of value sets for any value set collection.
 #'
 #' @examples
 #' my.api.key <- readline()
 #'
-#' result <- cedarr::listValueSets(
-#'   my.api.key,
+#' result1 <- cedarr::listValueSets(
+#'   my.api.key
 #' )
 #'
-#' View(result)
+#' View(result1)
 #'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 listValueSets <- function(
@@ -44,28 +38,16 @@ listValueSets <- function(
   # Invalid ====
   check <- newArgCheck()
 
-  if(!is.character(api.key))
-    addError(
-      msg = "Invalid API key: must be a length-one character.
-      See https://cedar.metadatacenter.org/profile.",
-      argcheck = check
-    )
-  if(!is.character(output.mode) ||
-      length(output.mode) == 0 ||
-      !output.mode %in% c("full", "content"))
-    addError(
-      msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
-      argcheck = check
-    )
+  check <- constantCheck(
+    c("api.key", "output.mode"),
+    check = check, env = environment()
+  )
 
   # Correction ====
-  if(length(output.mode) > 1){
-    output.mode <- output.mode[1]
-    addWarning(
-      msg = "`output.mode` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
+  check <- checkLength(
+    "output.mode",
+    check = check, env = environment()
+  )
 
   finishArgCheck(check)
 
@@ -80,18 +62,11 @@ listValueSets <- function(
   return(result)
 }
 
-#' Search values in CEDAR
-#'
-#' Find all value set collections.
-#'
-#  INTEREST ARGUMENTS
-#' @param api.key character. An API Key is required to access any API call. It is used within {cedarr}
-#' as a header for http requests. An API key is linked to a CEDAR account (https://cedar.metadatacenter.org/profile)
-#' @param output.mode character. "full" will return the whole response object (from {httr}) or "content" will
-#' fetch the interest values from the response object. Getting the whole object might be interesting to
-#' have a look at system metadata, or in case of error to debug the connection. (defaults to "content")
+#' @describeIn listValueSets
 #'
 #' @return
+#'
+#' An exhaustive list of the VS collections in CEDAR.
 #'
 #' If `output.mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
@@ -101,13 +76,12 @@ listValueSets <- function(
 #' database metadata and the interesting information in the `collection` subitem.
 #'
 #' @examples
-#' my.api.key <- readline()
 #'
-#' result <- cedarr::listVSCollections(
+#' result2 <- cedarr::listVSCollections(
 #'   my.api.key,
 #' )
 #'
-#' View(result)
+#' View(result2)
 #'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 listVSCollections <- function(
@@ -121,28 +95,16 @@ listVSCollections <- function(
   # Invalid ====
   check <- newArgCheck()
 
-  if(!is.character(api.key))
-    addError(
-      msg = "Invalid API key: must be a length-one character.
-      See https://cedar.metadatacenter.org/profile.",
-      argcheck = check
-    )
-  if(!is.character(output.mode) ||
-      length(output.mode) == 0 ||
-      !output.mode %in% c("full", "content"))
-    addError(
-      msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
-      argcheck = check
-    )
+  check <- constantCheck(
+    c("api.key", "output.mode"),
+    check = check, env = environment()
+  )
 
   # Correction ====
-  if(length(output.mode) > 1){
-    output.mode <- output.mode[1]
-    addWarning(
-      msg = "`output.mode` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
+  check <- checkLength(
+    "output.mode",
+    check = check, env = environment()
+  )
 
   finishArgCheck(check)
 

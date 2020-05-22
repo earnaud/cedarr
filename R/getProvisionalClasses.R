@@ -1,9 +1,7 @@
-#' Search values in CEDAR
+#' Access Provisional Classes
 #'
 #' Get all provisional classes in a particular ontology (including provisional
-#' value sets and provisional values). N.B. Since provisional classes are less
-#' stable than regular ones, the choice was made to write a separate method for
-#' those ones.
+#' value sets and provisional values).
 #'
 #' @param api.key character. An API Key is required to access any API call. It
 #' is used within {cedarr} as a header for http requests. An API key is linked
@@ -18,7 +16,19 @@
 #' @param page.size integer. Number of results per page, capped at 50. (defaults
 #' to 50).
 #'
+#' @details
+#'
+#' This function matches the following query from the Swagger UI
+#' (https://terminology.metadatacenter.org/api/#/):
+#'
+#' \itemize {
+#'   \item {`ontology/{ontology}/classes/provisional`}
+#' }
+#'
 #' @return
+#'
+#' Since this function targets classes provisionnaly available, it is expected
+#' to get an empty result.
 #'
 #' If `output.mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
@@ -30,7 +40,7 @@
 #' @examples
 #' my.api.key <- readline()
 #'
-#' result <- cedarr::accessOntology(
+#' result <- cedarr::accessProvisional(
 #'   my.api.key,
 #'   "ENVO"
 #' )
@@ -38,11 +48,11 @@
 #' View(result)
 #'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
-accessOntology <- function(
+accessProvisional <- function(
   api.key,
   ontology,
   output.mode = "content",
-  page = 1,
+  page.index = 1,
   page.size = 50
 ){
   # Missing ====
@@ -54,49 +64,27 @@ accessOntology <- function(
   # Invalid ====
   check <- newArgCheck()
 
-  if(!is.character(api.key))
-    addError(
-      msg = "Invalid API key: must be a length-one character.
-      See https://cedar.metadatacenter.org/profile.",
-      argcheck = check
-    )
-  if(!is.character(ontology) || !is.na(ontology))
+  check <- constantCheck(
+    c("api.key", "output.mode", "page.index", "page.size"),
+    check = check, env = environment()
+  )
+
+  if(isFALSE(is.character(ontology) || is.na(ontology)))
     addError(
       msg = "Invalid type for `ontology`.",
       argcheck = check
     )
-  if(!is.character(output.mode) ||
-      length(output.mode) == 0 ||
-      !output.mode %in% c("full", "content"))
-    addError(
-      msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
-      argcheck = check
-    )
-  if(!is.numeric(page) || page == 0)
-    addError(
-      msg = "Invalid value for `page`.",
-      argcheck = check
-    )
-  if(!is.numeric(page.size) || page.size == 0)
-    addError(
-      msg = "Invalid value for `page.size`.",
-      argcheck = check
-    )
 
   # Correction ====
+  check <- checkLength(
+    c("api.key", "output.mode", "page.index","page.size"),
+    check = check, env = environment()
+  )
+
   if(is.na(ontology))
     sub <- NULL
   else if(is.character(ontology))
     ontology <- paste0("/", ontology)
-  sapply(c("output.mode", "page","page.size"), function(arg){
-    if(length(get(arg)) > 1){
-      assign(arg, get(arg)[1])
-      addWarning(
-        msg = "`",arg,"` argument had length > 1: only the first element is used.",
-        argcheck = check
-      )
-    }
-  })
 
   finishArgCheck(check)
 
@@ -106,10 +94,10 @@ accessOntology <- function(
     paste0(
       "https://terminology.metadatacenter.org/bioportal/ontologies",
       ontology,
-      "/classes/provisional",
+      "/classes/provisional"
     ),
     query = list(
-      page = page,
+      page = page.index,
       page_size = page.size
     ),
     output.mode = output.mode

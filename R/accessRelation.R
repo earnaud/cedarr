@@ -1,6 +1,7 @@
 #' Search relation in CEDAR
 #'
-#' Find provisional relation by id.
+#' Find provisional relation by id. DISCLAIMER: at current development stage of
+#' the API, this function is not operational (empty content) !
 #'
 #  INTEREST ARGUMENTS
 #' @param api.key character. An API Key is required to access any API call. It
@@ -11,6 +12,18 @@
 #' (from {httr}) or "content" will fetch the interest values from the response
 #' object. Getting the whole object might be interesting to have a look at system
 #' metadata, or in case of error to debug the connection. (defaults to "content")
+#'
+#' @details
+#'
+#' DISCLAIMER: at current development stage of the API, this function is not
+#' operational !
+#'
+#' This function matches the following queries from the Swagger UI
+#' (https://terminology.metadatacenter.org/api/#/):
+#'
+#' \itemize {
+#'   \item {`/relations/{id}`}
+#' }
 #'
 #' @return
 #'
@@ -67,13 +80,10 @@ accessRelation <- function(
     )
 
   # Correction ====
-  if(length(id) > 1){
-    assign(id, id[1])
-    addWarning(
-      msg = "`id` argument had length > 1: only the first element is used.",
-      argcheck = check
-    )
-  }
+  check <- checkLength(
+    c("id"),
+    check = check, env = environment()
+  )
 
   finishArgCheck(check)
 

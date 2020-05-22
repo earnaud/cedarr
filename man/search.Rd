@@ -14,7 +14,7 @@ search(
   subtree.root.id = NA_character_,
   subtree.source = NA_character_,
   maxDepth = 1,
-  page = 1,
+  page.index = 1,
   page.size = 50
 )
 }
@@ -49,7 +49,7 @@ that limits the search to the branch rooted on that class.}
 \item{maxDepth}{integer. Subtree depth.Not evaluated if
 \code{subtree.root.id} is not provided.}
 
-\item{page}{integer. Index of the page to be returned
+\item{page.index}{integer. Index of the page to be returned
 (defaults to 1st page).}
 
 \item{page.size}{integer. Number of results per page, capped
@@ -60,6 +60,9 @@ subtree search will be performed. Not evaluated if
 \code{subtree.root.id} is not provided.}
 }
 \value{
+A list or data.frame with detailed information on the queried information and
+how to access it.
+
 If \code{output.mode = "full"}, the whole http response object (see httr::response).
 It is structured as a list with response metadata wrapping the \code{content} item
 which contains the wanted result.
@@ -68,14 +71,22 @@ If \code{output.mode = "content"}, the \code{content} item is directly returned,
 database metadata and the interesting information in the \code{collection} subitem.
 }
 \description{
-Function to query terms, classes or retrieve full ontologies
+Search for terms, classes or retrieve full ontologies
 from the CEDAR terminology metadata center.
 (https://terminology.metadatacenter.org/api/#/).
+}
+\details{
+This function matches the following query from the Swagger UI
+(https://terminology.metadatacenter.org/api/#/):
+
+\itemize {
+\item {\verb{/search}, for both classes and values}
+}
 }
 \examples{
 my.api.key <- readline()
 
-result <- cedarr::query(
+result <- cedarr::search(
   my.api.key,
   "habitat",
   "ENVO"

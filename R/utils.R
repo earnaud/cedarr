@@ -32,9 +32,6 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
     stop("No API key provided: see https://cedar.metadatacenter.org/profile.")
   if(missing(url))
     stop("No URL provided: required to target resources.")
-  if(isFALSE(is.character(output.mode) && output.mode %in% c("full","content")))
-
-  message(url)
 
   result <- GET(
     url,
@@ -57,8 +54,7 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
 
 #' Correct arguments length.
 #'
-#' @param ... list. A list of arguments. Length of each item in this list will be
-#' shortened to 1.
+#' @param ... list. A list of arguments to check for length.
 #' @param check ArgCheck. An ArgCheck object from package {ArgumentCheck}.
 #' @param env environment. The environment in which  ... is being evaluated.
 #'
@@ -84,6 +80,50 @@ checkLength <- function(..., check, env = .GlobalEnv){
         argcheck = check
       )
     }
+  })
+
+  return(check)
+}
+
+#' Constant checks
+#'
+#' These checks are found in every function of {cedarr}.
+#'
+#' @param ... list. A list of arguments to check for validity.
+#' @param check ArgCheck. An ArgCheck object from package {ArgumentCheck}.
+#' @param env environment. The environment in which args is being evaluated.
+#'
+constantCheck <- function(..., check, env = .GlobalEnv){
+  args <- as.list(...)
+
+  sapply(args, function(arg, .env = env){
+    arg.value <- get(arg, envir = .env)
+
+    # Check type
+    if(switch(arg,
+      api.key = !is.character(arg.value),
+      output.mode = !is.character(arg.value),
+      page.index = !is.numeric(arg.value),
+      page.size = !is.numeric(arg.value),
+      FALSE
+    ))
+      addError(
+        msg = paste("Invalid type for", arg),
+        argcheck = check
+      )
+
+    # Check value
+    if(switch(arg,
+      output.mode = !arg.value %in% c("full", "content"),
+      page.index = as.integer(arg.value) == 0,
+      page.size = as.integer(arg.value) == 0,
+      FALSE
+    ))
+      addError(
+        msg = paste("Invalid value for", arg),
+        argcheck = check
+      )
+
   })
 
   return(check)

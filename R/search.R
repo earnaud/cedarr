@@ -1,10 +1,9 @@
 #' Search values in CEDAR
 #'
-#' Function to query terms, classes or retrieve full ontologies
+#' Search for terms, classes or retrieve full ontologies
 #' from the CEDAR terminology metadata center.
 #' (https://terminology.metadatacenter.org/api/#/).
 #'
-#  INTEREST ARGUMENTS
 #' @param api.key character. An API Key is required to access any
 #' API call. It is used within {cedarr} as a header for http
 #' requests. An API key is linked to a CEDAR account
@@ -30,12 +29,24 @@
 #' `subtree.root.id` is not provided.
 #' @param maxDepth integer. Subtree depth.Not evaluated if
 #' `subtree.root.id` is not provided.
-#' @param page integer. Index of the page to be returned
+#' @param page.index integer. Index of the page to be returned
 #' (defaults to 1st page).
 #' @param page.size integer. Number of results per page, capped
 #' at 50. (defaults to 50).
 #'
+#' @details
+#'
+#' This function matches the following query from the Swagger UI
+#' (https://terminology.metadatacenter.org/api/#/):
+#'
+#' \itemize {
+#'   \item {`/search`, for both classes and values}
+#' }
+#'
 #' @return
+#'
+#' A list or data.frame with detailed information on the queried information and
+#' how to access it.
 #'
 #' If `output.mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
@@ -47,7 +58,7 @@
 #' @examples
 #' my.api.key <- readline()
 #'
-#' result <- cedarr::query(
+#' result <- cedarr::search(
 #'   my.api.key,
 #'   "habitat",
 #'   "ENVO"
@@ -56,6 +67,7 @@
 #' View(result)
 #'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom utils URLencode
 search <- function(
   api.key,
   query,
@@ -66,7 +78,7 @@ search <- function(
   subtree.root.id = NA_character_,
   subtree.source = NA_character_,
   maxDepth = 1,
-  page = 1,
+  page.index = 1,
   page.size= 50
 ){
   # Missing ====
@@ -78,18 +90,17 @@ search <- function(
   # Invalid ====
   check <- newArgCheck()
 
-  if(!is.character(api.key))
-    addError(
-      msg = "Invalid API key: must be a length-one character.\
-      See https://cedar.metadatacenter.org/profile.",
-      argcheck = check
-    )
+  check <- constantCheck(
+    c("api.key", "output.mode", "page.index", "page.size"),
+    check = check, env = environment()
+  )
+
   if(!is.character(query) || query == "")
     addError(
       msg = "Invalid query: must be at least one word length.",
       argcheck = check
     )
-  if(!is.character(sources) || !is.na(sources))
+  if(isFALSE(is.character(sources) || is.na(sources)))
     addError(
       msg = "Invalid type for `sources`.",
       argcheck = check
@@ -102,19 +113,12 @@ search <- function(
       'all', 'classes', 'value_sets', 'values'.",
       argcheck = check
     )
-  if(!is.logical(suggest) || (!isTRUE(suggest) && !isFALSE(suggest)))
+  if(isFALSE(is.logical(suggest) || (isTRUE(suggest) || isFALSE(suggest))))
     addError(
       msg = "Invalid value for `suggest`.",
       argcheck = check
     )
-  if(!is.character(output.mode) ||
-      length(output.mode) == 0 ||
-      !output.mode %in% c("full", "content"))
-    addError(
-      msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
-      argcheck = check
-    )
-  if((!is.character(subtree.root.id) && !is.na(subtree.root.id)))
+  if(isFALSE(is.character(subtree.root.id) || is.na(subtree.root.id)))
     addError(
       msg = "Invalid value for `subtree.root.id`. Must be an URL for the target
       Class identifier.",
@@ -127,38 +131,29 @@ search <- function(
         ontology containing `subtree.root.id` class.",
         argcheck = check
       )
-    if(isFALSE(is.integer(as.integer(maxDepth)) && as.integer(maxDepth) > 0))
+    if(isFALSE(is.integer(maxDepth) && as.integer(maxDepth) > 0))
       addError(
         msg = "Invalid value for `maxDepth`. Must be a positive integer.",
         argcheck = check
       )
   }
-  if(!is.numeric(page) || page == 0)
-    addError(
-      msg = "Invalid value for `page`.",
-      argcheck = check
-    )
-  if(!is.numeric(page.size) || page.size == 0)
-    addError(
-      msg = "Invalid value for `page.size`.",
-      argcheck = check
-    )
 
   # Correction ====
   if(is.na(sources))
     sources <- NULL
-  sapply(c("scope","suggest","output.mode", "subtree.root.id", "subtree.source",
-    "maxDepth", "page","page.size"), function(arg){
-    if(length(get(arg)) > 1){
-      assign(arg, get(arg)[1])
-      addWarning(
-        msg="`",arg,"` argument had length>1: only the first element is used.",
-        argcheck = check
-      )
-    }
-  })
-  if(!is.na(subtree.root.id)){
-    maxDepth <- as.integer(maxDepth)
+
+  check <- checkLength(
+    c("api.key", "scope","suggest","output.mode", "subtree.root.id",
+      "subtree.source", "maxDepth", "page.index","page.size"),
+    check = check, env = environment()
+  )
+
+  if(is.na(subtree.root.id)){
+    subtree.root.id <- NULL
+    subtree.source <- NULL
+  }
+  else {
+    subtree.root.id <- URLencode(subtree.root.id, reserved = TRUE)
   }
 
   finishArgCheck(check)
@@ -172,8 +167,11 @@ search <- function(
       scope = scope,
       sources = sources,
       suggest = suggest,
-      page = page,
-      page_size = page.size
+      subtree_root_id = subtree.root.id,
+      source = subtree.source,
+      maxDepth = as.integer(maxDepth),
+      page = as.integer(page.index),
+      page_size = as.integer(page.size)
     ),
     output.mode = output.mode
   )

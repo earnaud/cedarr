@@ -2,7 +2,7 @@
 % Please edit documentation in R/accessProperty.R
 \name{accessProperty}
 \alias{accessProperty}
-\title{Access properties}
+\title{Access Properties}
 \usage{
 accessProperty(
   api.key,
@@ -26,7 +26,14 @@ precise property.}
 
 \item{sub}{character. Either NA to get the precise property alone, or one
 among "tree", "children", "descendants", "parents" to get related properties
-according to this value. Ignored if \code{id} is set to NA or "roots".}
+according to this value. Not evaluated if \code{id} is set to NA or "roots".}
+
+\item{output.mode}{character. "full" will return the whole
+response object (from {httr}) or "content" will fetch the
+interest values from the response object. Getting the whole
+object might be interesting to have a look at system metadata,
+or in case of error to debug the connection. (defaults to
+"content")}
 }
 \value{
 If \code{output.mode = "full"}, the whole http response object (see httr::response).
@@ -38,4 +45,48 @@ database metadata and the interesting information in the \code{collection} subit
 }
 \description{
 Function to access the CEDAR properties suite.
+}
+\details{
+This function matches the following queries from the Swagger UI
+(https://terminology.metadatacenter.org/api/#/):
+
+\itemize {
+\item {\verb{/ontologies/\{ontology\}/properties}}
+\item {\verb{/ontologies/\{ontology\}/properties/roots}}
+\item {\verb{/ontologies/\{ontology\}/properties/\{id\}}}
+\item {\verb{/ontologies/\{ontology\}/properties/\{id\}/tree}}
+\item {\verb{/ontologies/\{ontology\}/properties/\{id\}/children}}
+\item {\verb{/ontologies/\{ontology\}/properties/\{id\}/descendants}}
+\item {\verb{/ontologies/\{ontology\}/properties/\{id\}/parents}}
+}
+
+These differents requests are differenciated by the \code{id} and \code{sub}
+arguments.
+}
+\examples{
+my.api.key <- readline()
+
+# Query 1: list the roots properties in ENVO
+
+result1 <- cedarr::accessProperty(
+  my.api.key,
+  "ENVO",
+  id = "roots",
+  sub = "smurf" # ignored
+)
+
+View(result1)
+
+# Query 2: get the parents properties for "alternative term" in ENVO
+
+result2 <- cedarr::accessProperty(
+  my.api.key,
+  "ENVO",
+  id = "http://purl.obolibrary.org/obo/IAO_0000118",
+  sub = "parents"
+)
+
+View(result2)
+
+
 }

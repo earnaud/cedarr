@@ -2,28 +2,48 @@
 % Please edit documentation in R/accessClass.R
 \name{accessClass}
 \alias{accessClass}
-\title{Search values in CEDAR}
+\title{Access Classes}
 \usage{
-accessClass(api.key, ontology, id, sub, output.mode = "content")
+accessClass(
+  api.key,
+  ontology,
+  id,
+  sub = NA_character_,
+  output.mode = "content"
+)
 }
 \arguments{
-\item{api.key}{character. An API Key is required to access any API call. It is used within {cedarr}
-as a header for http requests. An API key is linked to a CEDAR account (https://cedar.metadatacenter.org/profile)}
+\item{api.key}{character. An API Key is required to access any
+API call. It is used within {cedarr} as a header for http
+requests. An API key is linked to a CEDAR account
+(https://cedar.metadatacenter.org/profile)}
 
 \item{ontology}{character. Ontology name to display.}
 
-\item{id}{character. Class ID to get, formatted as an URL (item \verb{@id} in the result of
-accessOntology()).}
+\item{id}{character. Class ID to get, formatted as an URL.
+(item \verb{@id} in the result of accessOntology())}
 
-\item{sub}{character. Class sub-item ID to retrieve. Can be: NA, "tree", "children",
-"descendants" or "parents".}
+\item{sub}{character. Class content ID to retrieve. Can be:
+NA, "tree", "children", "descendants" or "parents".}
 
-\item{output.mode}{character. "full" will return the whole response object
-(from {httr}) or "content" will fetch the interest values from the response
-object. Getting the whole object might be interesting to have a look at system
-metadata, or in case of error to debug the connection. (defaults to "content")}
+\item{output.mode}{character. "full" will return the whole
+response object (from {httr}) or "content" will fetch the
+interest values from the response object. Getting the whole
+object might be interesting to have a look at system metadata,
+or in case of error to debug the connection. (defaults to
+"content")}
 }
 \value{
+Setting \code{sub} to NA will retrieve the class item such as it is presented in
+the return of \code{accessOntology()} (item \verb{@id}).
+Setting \code{sub} to "tree" will return the roots of the ontology in a data.frame.
+Setting \code{sub} to "children" will return all of the descendants from the class
+that happen to be one level below the class itself in its ontology.
+Setting \code{sub} to "descendants" will return all of the descendants from the
+class, whatever is their level below the target class.
+Setting \code{sub} to "parents" will return the class coming before the target
+class in its ontology.
+
 If \code{output.mode = "full"}, the whole http response object (see httr::response).
 It is structured as a list with response metadata wrapping the \code{content} item
 which contains the wanted result.
@@ -32,14 +52,31 @@ If \code{output.mode = "content"}, the \code{content} item is directly returned,
 database metadata and the interesting information in the \code{collection} subitem.
 }
 \description{
-Get all classes from a specific ontology (including both regular and provisional classes).
+Access classes (including both regular and provisional) by ontology and class
+id.
+}
+\details{
+This function matches the following queries from the Swagger UI
+(https://terminology.metadatacenter.org/api/#/):
+
+\itemize {
+\item {\verb{/ontologies/\{ontology\}/classes/\{id\}}}
+\item {\verb{/ontologies/\{ontology\}/classes/\{id\}/tree}}
+\item {\verb{/ontologies/\{ontology\}/classes/\{id\}/children}}
+\item {\verb{/ontologies/\{ontology\}/classes/\{id\}/descendants}}
+\item {\verb{/ontologies/\{ontology\}/classes/\{id\}/parents}}
+}
+
+These differents requests are differenciated by the \code{sub} argument.
 }
 \examples{
 my.api.key <- readline()
 
+# Fetch 'biome' class in ENVO
 result <- cedarr::accessClass(
   my.api.key,
-  "ENVO"
+  "ENVO",
+  "http://purl.obolibrary.org/obo/ENVO_00000428"
 )
 
 View(result)
