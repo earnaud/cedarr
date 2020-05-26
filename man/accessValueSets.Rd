@@ -40,10 +40,10 @@ or in case of error to debug the connection. (defaults to "content")}
 to 50).}
 }
 \value{
-\itemize {
-\item {If only a VS collection ID is provided: a list of the value sets in
+\itemize{
+\item{If only a VS collection ID is provided: a list of the value sets in
 this VS collection.}
-\item {If a VS collection ID and a value set ID are provided: an entry for
+\item{If a VS collection ID and a value set ID are provided: an entry for
 the corresponding value set. With \code{sub} = "tree", retrieve the root values.
 If \code{sub} = "values", retrieve the value set's values.}
 }
@@ -62,11 +62,11 @@ Get access to all or part of the value sets by VS collection.
 This function matches the following queries from the Swagger UI
 (https://terminology.metadatacenter.org/api/#/):
 
-\itemize {
-\item {\verb{/vs-collection/\{vs_collection\}/value-sets}}
-\item {\verb{/vs-collection/\{vs_collection\}/value-sets/\{id\}}}
-\item {\verb{/vs-collection/\{vs_collection\}/value-sets/\{id\}/tree}}
-\item {\verb{/vs-collection/\{vs_collection\}/value-sets/\{id\}/values}}
+\itemize{
+\item{\verb{/vs-collection/\{vs_collection\}/value-sets}}
+\item{\verb{/vs-collection/\{vs_collection\}/value-sets/\{id\}}}
+\item{\verb{/vs-collection/\{vs_collection\}/value-sets/\{id\}/tree}}
+\item{\verb{/vs-collection/\{vs_collection\}/value-sets/\{id\}/values}}
 }
 
 These differents requests are differenciated by the \code{id} and \code{sub}

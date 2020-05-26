@@ -61,8 +61,8 @@ metadata center. (https://terminology.metadatacenter.org/api/#/).
 This function matches the following query from the Swagger UI
 (https://terminology.metadatacenter.org/api/#/):
 
-\itemize {
-\item {\verb{/property_search}}
+\itemize{
+\item{\verb{/property_search}}
 }
 }
 \examples{

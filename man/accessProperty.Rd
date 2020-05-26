@@ -36,7 +36,7 @@ or in case of error to debug the connection. (defaults to
 "content")}
 }
 \value{
-\itemize {
+\itemize{
 \item{If no property ID is provided: list all of the properties, or all the
 ontology's root properties if \code{sub} = "roots".}
 \item{If a property ID is provided: an entry for the corresponding property,
@@ -60,14 +60,14 @@ Function to access the CEDAR properties suite.
 This function matches the following queries from the Swagger UI
 (https://terminology.metadatacenter.org/api/#/):
 
-\itemize {
-\item {\verb{/ontologies/\{ontology\}/properties}}
-\item {\verb{/ontologies/\{ontology\}/properties/roots}}
-\item {\verb{/ontologies/\{ontology\}/properties/\{id\}}}
-\item {\verb{/ontologies/\{ontology\}/properties/\{id\}/tree}}
-\item {\verb{/ontologies/\{ontology\}/properties/\{id\}/children}}
-\item {\verb{/ontologies/\{ontology\}/properties/\{id\}/descendants}}
-\item {\verb{/ontologies/\{ontology\}/properties/\{id\}/parents}}
+\itemize{
+\item{\verb{/ontologies/\{ontology\}/properties}}
+\item{\verb{/ontologies/\{ontology\}/properties/roots}}
+\item{\verb{/ontologies/\{ontology\}/properties/\{id\}}}
+\item{\verb{/ontologies/\{ontology\}/properties/\{id\}/tree}}
+\item{\verb{/ontologies/\{ontology\}/properties/\{id\}/children}}
+\item{\verb{/ontologies/\{ontology\}/properties/\{id\}/descendants}}
+\item{\verb{/ontologies/\{ontology\}/properties/\{id\}/parents}}
 }
 
 These differents requests are differenciated by the \code{id} and \code{sub}

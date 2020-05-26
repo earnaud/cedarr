@@ -65,11 +65,11 @@ Find value by id.
 This function matches the following queries from the Swagger UI
 (https://terminology.metadatacenter.org/api/#/):
 
-\itemize {
-\item {\verb{/vs-collections/\{vs_collection\}/values/\{id\}}}
-\item {\verb{/vs-collections/\{vs_collection\}/values/\{id\}/tree}}
-\item {\verb{/vs-collections/\{vs_collection\}/values/\{id\}/all-values}}
-\item {\verb{/vs-collections/\{vs_collection\}/values/\{id\}/value-set}}
+\itemize{
+\item{\verb{/vs-collections/\{vs_collection\}/values/\{id\}}}
+\item{\verb{/vs-collections/\{vs_collection\}/values/\{id\}/tree}}
+\item{\verb{/vs-collections/\{vs_collection\}/values/\{id\}/all-values}}
+\item{\verb{/vs-collections/\{vs_collection\}/values/\{id\}/value-set}}
 }
 
 These differents requests are differenciated by the \code{id} and \code{sub}

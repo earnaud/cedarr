@@ -49,8 +49,8 @@ value sets and provisional values).
 This function matches the following query from the Swagger UI
 (https://terminology.metadatacenter.org/api/#/):
 
-\itemize {
-\item {\code{ontology/{ontology}/classes/provisional}}
+\itemize{
+\item{\code{ontology/{ontology}/classes/provisional}}
 }
 }
 \examples{

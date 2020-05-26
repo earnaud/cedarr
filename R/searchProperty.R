@@ -29,8 +29,8 @@
 #' This function matches the following query from the Swagger UI
 #' (https://terminology.metadatacenter.org/api/#/):
 #'
-#' \itemize {
-#'   \item {`/property_search`}
+#' \itemize{
+#'   \item{`/property_search`}
 #' }
 #'
 #' @return

@@ -41,8 +41,8 @@ or in case of error to debug the connection. (defaults to
 \item{page.size}{integer. Number of results per page, capped at 50. (defaults to 50).}
 }
 \value{
-\itemize {
-\item {If no ontology ID is provided: returns a list of all ontologies registered in
+\itemize{
+\item{If no ontology ID is provided: returns a list of all ontologies registered in
 CEDAR.}
 \item{If an ontology ID is provided: returns an entry for this ontology.}
 \item{If an ontology ID is provided with \code{item} = "classes": returns either
@@ -67,13 +67,13 @@ Access ontologies by id and list their content.
 This function matches the following queries from the Swagger UI
 (https://terminology.metadatacenter.org/api/#/):
 
-\itemize {
-\item {\verb{/ontologies}}
-\item {\verb{/ontologies/\{ontology\}}}
-\item {\verb{/ontologies/\{ontology\}/classes}}
-\item {\verb{/ontologies/\{ontology\}/classes/roots}}
-\item {\verb{/ontologies/\{ontology\}/properties}}
-\item {\verb{/ontologies/\{ontology\}/properties/roots}}
+\itemize{
+\item{\verb{/ontologies}}
+\item{\verb{/ontologies/\{ontology\}}}
+\item{\verb{/ontologies/\{ontology\}/classes}}
+\item{\verb{/ontologies/\{ontology\}/classes/roots}}
+\item{\verb{/ontologies/\{ontology\}/properties}}
+\item{\verb{/ontologies/\{ontology\}/properties/roots}}
 }
 
 These differents requests are differenciated by the \code{item} and \code{sub}

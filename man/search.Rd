@@ -79,8 +79,8 @@ from the CEDAR terminology metadata center.
 This function matches the following query from the Swagger UI
 (https://terminology.metadatacenter.org/api/#/):
 
-\itemize {
-\item {\verb{/search}, for both classes and values}
+\itemize{
+\item{\verb{/search}, for both classes and values}
 }
 }
 \examples{

@@ -38,8 +38,8 @@ operational !
 This function matches the following queries from the Swagger UI
 (https://terminology.metadatacenter.org/api/#/):
 
-\itemize {
-\item {\verb{/relations/\{id\}}}
+\itemize{
+\item{\verb{/relations/\{id\}}}
 }
 }
 \examples{
