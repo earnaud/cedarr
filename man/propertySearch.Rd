@@ -44,6 +44,8 @@ to 50).}
 definitions. (defaults to FALSE).}
 }
 \value{
+A search result with the properties corresponding to the query.
+
 If \code{output.mode = "full"}, the whole http response object (see httr::response).
 It is structured as a list with response metadata wrapping the \code{content} item
 which contains the wanted result.
@@ -55,8 +57,18 @@ database metadata and the interesting information in the \code{collection} subit
 Function to query properties from ontologies registered in the CEDAR terminology
 metadata center. (https://terminology.metadatacenter.org/api/#/).
 }
+\details{
+This function matches the following query from the Swagger UI
+(https://terminology.metadatacenter.org/api/#/):
+
+\itemize {
+\item {\verb{/property_search}}
+}
+}
 \examples{
 my.api.key <- readline()
+
+# Search for a property matching "has curation status"
 
 result <- cedarr::query(
   my.api.key,

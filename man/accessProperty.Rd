@@ -36,6 +36,16 @@ or in case of error to debug the connection. (defaults to
 "content")}
 }
 \value{
+\itemize {
+\item{If no property ID is provided: list all of the properties, or all the
+ontology's root properties if \code{sub} = "roots".}
+\item{If a property ID is provided: an entry for the corresponding property,
+or the roots properties if \code{sub} = "tree", the properties defined at the
+level under the target property if \code{sub} = "children", the lowest properties
+defined under the target property if \code{sub} = "descendants" or the properties
+defined previously to the one targeted if \code{sub} = "parents".}
+}
+
 If \code{output.mode = "full"}, the whole http response object (see httr::response).
 It is structured as a list with response metadata wrapping the \code{content} item
 which contains the wanted result.

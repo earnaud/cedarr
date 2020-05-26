@@ -10,7 +10,7 @@ accessValues(
   id,
   sub = NA_character_,
   output.mode = "content",
-  page = 1,
+  page.index = 1,
   page.size = 50
 )
 }
@@ -35,12 +35,22 @@ object might be interesting to have a look at system metadata,
 or in case of error to debug the connection. (defaults to
 "content")}
 
-\item{page}{integer. Index of the page to be returned (defaults to 1st page).}
+\item{page.index}{integer. Index of the page to be returned (defaults to 1st page).}
 
 \item{page.size}{integer. Number of results per page, capped at 50. (defaults
 to 50).}
 }
 \value{
+\itemize{
+\item{If a single value ID is provided: an entry for the corresponding value.}
+\item{If a value ID is provided and \code{sub} = "tree": get value tree (only for
+regular values).}
+\item{If a value ID is provided and \code{sub} = "all-values": find all values
+in the value set that the given value belongs to.}
+\item{If a value ID is provided and \code{sub} = "value-set": an entry for the
+value set the target values belong to.}
+}
+
 If \code{output.mode = "full"}, the whole http response object (see httr::response).
 It is structured as a list with response metadata wrapping the \code{content} item
 which contains the wanted result.
@@ -71,7 +81,7 @@ my.api.key <- readline()
 result <- cedarr::accessValues(
   my.api.key,
   vs.collection = "CEDARVS",
-  id = ???
+  id = ??? # WIP
 )
 
 View(result)
