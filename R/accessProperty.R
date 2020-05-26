@@ -82,7 +82,6 @@
 #'
 #' View(result2)
 #'
-#' @include utils.R
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 #' @importFrom utils URLencode
 accessProperty <- function(

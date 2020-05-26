@@ -66,7 +66,6 @@
 #'
 #' View(result)
 #'
-#' @include utils.R
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 #' @importFrom utils URLencode
 search <- function(

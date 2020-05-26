@@ -14,17 +14,5 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
-Collate:
-    'utils.R'
-    'accessClass.R'
-    'accessOntology.R'
-    'accessProperty.R'
-    'accessRelation.R'
-    'accessValueSets.R'
-    'accessValues.R'
-    'getProvisionalClasses.R'
-    'listValueSets.R'
-    'search.R'
-    'searchProperty.R'
 Suggests: 
     testthat
