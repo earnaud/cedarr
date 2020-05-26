@@ -98,5 +98,4 @@ result2 <- cedarr::accessProperty(
 
 View(result2)
 
-
 }
