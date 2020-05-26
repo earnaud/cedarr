@@ -21,8 +21,8 @@
 #' This function matches the following query from the Swagger UI
 #' (https://terminology.metadatacenter.org/api/#/):
 #'
-#' \itemize {
-#'   \item {`ontology/{ontology}/classes/provisional`}
+#' \itemize{
+#'   \item{`ontology/{ontology}/classes/provisional`}
 #' }
 #'
 #' @return

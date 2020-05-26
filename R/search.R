@@ -39,8 +39,8 @@
 #' This function matches the following query from the Swagger UI
 #' (https://terminology.metadatacenter.org/api/#/):
 #'
-#' \itemize {
-#'   \item {`/search`, for both classes and values}
+#' \itemize{
+#'   \item{`/search`, for both classes and values}
 #' }
 #'
 #' @return

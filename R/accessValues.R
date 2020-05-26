@@ -26,11 +26,11 @@
 #' This function matches the following queries from the Swagger UI
 #' (https://terminology.metadatacenter.org/api/#/):
 #'
-#' \itemize {
-#'   \item {`/vs-collections/{vs_collection}/values/{id}`}
-#'   \item {`/vs-collections/{vs_collection}/values/{id}/tree`}
-#'   \item {`/vs-collections/{vs_collection}/values/{id}/all-values`}
-#'   \item {`/vs-collections/{vs_collection}/values/{id}/value-set`}
+#' \itemize{
+#'   \item{`/vs-collections/{vs_collection}/values/{id}`}
+#'   \item{`/vs-collections/{vs_collection}/values/{id}/tree`}
+#'   \item{`/vs-collections/{vs_collection}/values/{id}/all-values`}
+#'   \item{`/vs-collections/{vs_collection}/values/{id}/value-set`}
 #' }
 #'
 #' These differents requests are differenciated by the `id` and `sub`

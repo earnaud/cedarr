@@ -25,14 +25,14 @@
 #' This function matches the following queries from the Swagger UI
 #' (https://terminology.metadatacenter.org/api/#/):
 #'
-#' \itemize {
-#'   \item {`/ontologies/{ontology}/properties`}
-#'   \item {`/ontologies/{ontology}/properties/roots`}
-#'   \item {`/ontologies/{ontology}/properties/{id}`}
-#'   \item {`/ontologies/{ontology}/properties/{id}/tree`}
-#'   \item {`/ontologies/{ontology}/properties/{id}/children`}
-#'   \item {`/ontologies/{ontology}/properties/{id}/descendants`}
-#'   \item {`/ontologies/{ontology}/properties/{id}/parents`}
+#' \itemize{
+#'   \item{`/ontologies/{ontology}/properties`}
+#'   \item{`/ontologies/{ontology}/properties/roots`}
+#'   \item{`/ontologies/{ontology}/properties/{id}`}
+#'   \item{`/ontologies/{ontology}/properties/{id}/tree`}
+#'   \item{`/ontologies/{ontology}/properties/{id}/children`}
+#'   \item{`/ontologies/{ontology}/properties/{id}/descendants`}
+#'   \item{`/ontologies/{ontology}/properties/{id}/parents`}
 #' }
 #'
 #' These differents requests are differenciated by the `id` and `sub`
@@ -40,7 +40,7 @@
 #'
 #' @return
 #'
-#' \itemize {
+#' \itemize{
 #'   \item{If no property ID is provided: list all of the properties, or all the
 #'   ontology's root properties if `sub` = "roots".}
 #'   \item{If a property ID is provided: an entry for the corresponding property,

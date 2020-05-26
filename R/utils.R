@@ -76,7 +76,7 @@ checkLength <- function(..., check, env = .GlobalEnv){
     if(length(arg.value) > 1){
       assign(arg, arg.value, envir = .env)
       addWarning(
-        msg="`",arg,"` argument had length>1: only the first element is used.",
+        msg= paste0("`",arg,"` argument had length>1: only the first element is used."),
         argcheck = check
       )
     }

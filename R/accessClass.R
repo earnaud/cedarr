@@ -24,12 +24,12 @@
 #' This function matches the following queries from the Swagger UI
 #' (https://terminology.metadatacenter.org/api/#/):
 #'
-#' \itemize {
-#'   \item {`/ontologies/{ontology}/classes/{id}`}
-#'   \item {`/ontologies/{ontology}/classes/{id}/tree`}
-#'   \item {`/ontologies/{ontology}/classes/{id}/children`}
-#'   \item {`/ontologies/{ontology}/classes/{id}/descendants`}
-#'   \item {`/ontologies/{ontology}/classes/{id}/parents`}
+#' \itemize{
+#'   \item{`/ontologies/{ontology}/classes/{id}`}
+#'   \item{`/ontologies/{ontology}/classes/{id}/tree`}
+#'   \item{`/ontologies/{ontology}/classes/{id}/children`}
+#'   \item{`/ontologies/{ontology}/classes/{id}/descendants`}
+#'   \item{`/ontologies/{ontology}/classes/{id}/parents`}
 #' }
 #'
 #' These differents requests are differenciated by the `sub` argument.

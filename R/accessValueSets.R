@@ -25,11 +25,11 @@
 #' This function matches the following queries from the Swagger UI
 #' (https://terminology.metadatacenter.org/api/#/):
 #'
-#' \itemize {
-#'   \item {`/vs-collection/{vs_collection}/value-sets`}
-#'   \item {`/vs-collection/{vs_collection}/value-sets/{id}`}
-#'   \item {`/vs-collection/{vs_collection}/value-sets/{id}/tree`}
-#'   \item {`/vs-collection/{vs_collection}/value-sets/{id}/values`}
+#' \itemize{
+#'   \item{`/vs-collection/{vs_collection}/value-sets`}
+#'   \item{`/vs-collection/{vs_collection}/value-sets/{id}`}
+#'   \item{`/vs-collection/{vs_collection}/value-sets/{id}/tree`}
+#'   \item{`/vs-collection/{vs_collection}/value-sets/{id}/values`}
 #' }
 #'
 #' These differents requests are differenciated by the `id` and `sub`
@@ -37,10 +37,10 @@
 #'
 #' @return
 #'
-#' \itemize {
-#'   \item {If only a VS collection ID is provided: a list of the value sets in
+#' \itemize{
+#'   \item{If only a VS collection ID is provided: a list of the value sets in
 #'   this VS collection.}
-#'   \item {If a VS collection ID and a value set ID are provided: an entry for
+#'   \item{If a VS collection ID and a value set ID are provided: an entry for
 #'   the corresponding value set. With `sub` = "tree", retrieve the root values.
 #'   If `sub` = "values", retrieve the value set's values.}
 #' }

@@ -59,12 +59,12 @@ id.
 This function matches the following queries from the Swagger UI
 (https://terminology.metadatacenter.org/api/#/):
 
-\itemize {
-\item {\verb{/ontologies/\{ontology\}/classes/\{id\}}}
-\item {\verb{/ontologies/\{ontology\}/classes/\{id\}/tree}}
-\item {\verb{/ontologies/\{ontology\}/classes/\{id\}/children}}
-\item {\verb{/ontologies/\{ontology\}/classes/\{id\}/descendants}}
-\item {\verb{/ontologies/\{ontology\}/classes/\{id\}/parents}}
+\itemize{
+\item{\verb{/ontologies/\{ontology\}/classes/\{id\}}}
+\item{\verb{/ontologies/\{ontology\}/classes/\{id\}/tree}}
+\item{\verb{/ontologies/\{ontology\}/classes/\{id\}/children}}
+\item{\verb{/ontologies/\{ontology\}/classes/\{id\}/descendants}}
+\item{\verb{/ontologies/\{ontology\}/classes/\{id\}/parents}}
 }
 
 These differents requests are differenciated by the \code{sub} argument.

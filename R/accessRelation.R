@@ -21,8 +21,8 @@
 #' This function matches the following queries from the Swagger UI
 #' (https://terminology.metadatacenter.org/api/#/):
 #'
-#' \itemize {
-#'   \item {`/relations/{id}`}
+#' \itemize{
+#'   \item{`/relations/{id}`}
 #' }
 #'
 #' @return

@@ -26,13 +26,13 @@
 #' This function matches the following queries from the Swagger UI
 #' (https://terminology.metadatacenter.org/api/#/):
 #'
-#' \itemize {
-#'   \item {`/ontologies`}
-#'   \item {`/ontologies/{ontology}`}
-#'   \item {`/ontologies/{ontology}/classes`}
-#'   \item {`/ontologies/{ontology}/classes/roots`}
-#'   \item {`/ontologies/{ontology}/properties`}
-#'   \item {`/ontologies/{ontology}/properties/roots`}
+#' \itemize{
+#'   \item{`/ontologies`}
+#'   \item{`/ontologies/{ontology}`}
+#'   \item{`/ontologies/{ontology}/classes`}
+#'   \item{`/ontologies/{ontology}/classes/roots`}
+#'   \item{`/ontologies/{ontology}/properties`}
+#'   \item{`/ontologies/{ontology}/properties/roots`}
 #' }
 #'
 #' These differents requests are differenciated by the `item` and `sub`
@@ -41,8 +41,8 @@
 #'
 #' @return
 #'
-#'\itemize {
-#'  \item {If no ontology ID is provided: returns a list of all ontologies registered in
+#'\itemize{
+#'  \item{If no ontology ID is provided: returns a list of all ontologies registered in
 #'  CEDAR.}
 #'  \item{If an ontology ID is provided: returns an entry for this ontology.}
 #'  \item{If an ontology ID is provided with `item` = "classes": returns either
