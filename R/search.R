@@ -133,7 +133,7 @@ search <- function(
         ontology containing `subtree.root.id` class.",
         argcheck = check
       )
-    if(isFALSE(is.integer(maxDepth) && as.integer(maxDepth) > 0))
+    if(isFALSE(as.integer(maxDepth) > 0))
       addError(
         msg = "Invalid value for `maxDepth`. Must be a positive integer.",
         argcheck = check
