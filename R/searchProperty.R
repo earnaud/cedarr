@@ -49,7 +49,7 @@
 #'
 #' # Search for a property matching "has curation status"
 #'
-#' result <- cedarr::query(
+#' result <- cedarr::propertySearch(
 #'   my.api.key,
 #'   "has curation status",
 #'   "ENVO"
@@ -127,7 +127,6 @@ propertySearch <- function(
       q = query,
       exact_match = exact.match,
       require_definitions = require.definitions,
-      suggest = suggest,
       page = page.index,
       page_size = page.size
     ),

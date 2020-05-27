@@ -119,7 +119,8 @@ accessProperty <- function(
     )
   else if(isFALSE(
     id %in% c("root", "roots") ||
-      grepl("^http", id)
+      grepl("^http", id) ||
+      is.na(id)
   ))
     addError(
       msg = "Invalid value for `id`.",

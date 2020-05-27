@@ -78,6 +78,9 @@ accessValues <- function(
   page.index = 1,
   page.size= 50
 ){
+  warning("DISCLAIMER: at current development stage of the package, this function is not
+operational !")
+
   # Missing ====
   if(missing(api.key))
     stop("No API client provided: see https://cedar.metadatacenter.org/profile.")

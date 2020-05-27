@@ -151,7 +151,7 @@ accessOntology <- function(
     cedar.get(
       api.key,
       paste0(
-        "https://terminology.metadatacenter.org/bioportal/ontologies/",
+        "https://terminology.metadatacenter.org/bioportal/ontologies",
         ontology
       ),
       query = list(
@@ -163,7 +163,7 @@ accessOntology <- function(
     cedar.get(
       api.key,
       paste0(
-        "https://terminology.metadatacenter.org/bioportal/ontologies/",
+        "https://terminology.metadatacenter.org/bioportal/ontologies",
         ontology
       ),
       output.mode = output.mode
