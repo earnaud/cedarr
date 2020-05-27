@@ -26,6 +26,8 @@
 #'
 #' View(result1)
 #'
+#' @export
+#'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 listValueSets <- function(
   api.key,
@@ -82,6 +84,8 @@ listValueSets <- function(
 #' )
 #'
 #' View(result2)
+#'
+#' @export
 #'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 listVSCollections <- function(

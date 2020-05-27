@@ -45,6 +45,8 @@
 #
 #' View(result)
 #'
+#' @export
+#'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 accessRelation <- function(
   api.key,

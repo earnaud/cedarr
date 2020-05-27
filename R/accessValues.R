@@ -66,6 +66,8 @@
 #'
 #' View(result)
 #'
+#' @export
+#'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 accessValues <- function(
   api.key,

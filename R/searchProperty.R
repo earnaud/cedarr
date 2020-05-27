@@ -57,6 +57,8 @@
 #'
 #' View(result)
 #'
+#' @export
+#'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 propertySearch <- function(
   api.key,

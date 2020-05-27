@@ -65,6 +65,8 @@
 #'
 #' View(result)
 #'
+#' @export
+#'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 #' @importFrom utils URLencode
 accessClass <- function(

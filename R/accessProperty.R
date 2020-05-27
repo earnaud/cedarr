@@ -82,6 +82,8 @@
 #'
 #' View(result2)
 #'
+#' @export
+#'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 #' @importFrom utils URLencode
 accessProperty <- function(

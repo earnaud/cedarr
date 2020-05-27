@@ -47,6 +47,8 @@
 #'
 #' View(result)
 #'
+#' @export
+#'
 #' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
 accessProvisional <- function(
   api.key,
