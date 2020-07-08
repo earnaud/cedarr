@@ -14,7 +14,7 @@
 #' @param exact.match logical Restricts results only to the exact matches of the
 #' query in the property id, label, or the generated label (a label, auto-generated
 #'  from the id). (defaults to FALSE)
-#' @param require.definition logical. Filter results only to those that include
+#' @param require.definitions logical. Filter results only to those that include
 #' definitions. (defaults to FALSE).
 #' @param output.mode character. "full" will return the whole response object
 #' (from {httr}) or "content" will fetch the interest values from the response
@@ -58,8 +58,7 @@
 #' View(result)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 propertySearch <- function(
   api.key,
   query,
@@ -77,7 +76,7 @@ propertySearch <- function(
     stop("No query provided.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   check <- constantCheck(
     c("api.key", "output.mode", "page.index", "page.size"),
@@ -85,24 +84,24 @@ propertySearch <- function(
   )
 
   if(!is.character(query) || query == "")
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid query: must be at least one word length.",
       argcheck = check
     )
   if(!is.character(sources) && !is.na(sources))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid type for `sources`.",
       argcheck = check
     )
   if(!is.logical(exact.match) ||
       !(isTRUE(exact.match) || isFALSE(exact.match)))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `exact.match`. Must be TRUE or FALSE.",
       argcheck = check
     )
   if(!is.logical(require.definitions) ||
       !(isTRUE(require.definitions) || isFALSE(require.definitions)))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `require.definitions`. Must be TRUE or FALSE.",
       argcheck = check
     )
@@ -117,7 +116,7 @@ propertySearch <- function(
     check = check, env = environment()
   )
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

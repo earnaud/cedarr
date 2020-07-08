@@ -74,8 +74,7 @@
 #' View(result)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 accessOntology <- function(
   api.key,
   ontology = NA_character_,
@@ -90,7 +89,7 @@ accessOntology <- function(
     stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   check <- constantCheck(
     c("api.key", "output.mode", "page.index", "page.size"),
@@ -98,7 +97,7 @@ accessOntology <- function(
   )
 
   if(isFALSE(is.character(ontology) || is.na(ontology)) || grepl("^ontologies", ontology))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid type for `ontology`. (string starting by \"ontologies\" are a reserved
       term)",
       argcheck = check
@@ -108,13 +107,13 @@ accessOntology <- function(
         NA, NA_character_,
         "class", "classe", "classes",
         "propert", "property", "properties"))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `item`.",
       argcheck = check
     )
   else if(!is.character(sub) ||
       !sub %in% c(NA, NA_character_, "root", "roots"))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `sub`.",
       argcheck = check
     )
@@ -144,7 +143,7 @@ accessOntology <- function(
     }
   }
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- ifelse(is.null(ontology),

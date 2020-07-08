@@ -27,8 +27,7 @@
 #' View(result1)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom ArgumentCheck newArgCheck finishArgCheck
 listValueSets <- function(
   api.key,
   output.mode = "content"
@@ -38,7 +37,7 @@ listValueSets <- function(
     stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   check <- constantCheck(
     c("api.key", "output.mode"),
@@ -51,7 +50,7 @@ listValueSets <- function(
     check = check, env = environment()
   )
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(
@@ -86,8 +85,7 @@ listValueSets <- function(
 #' View(result2)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 listVSCollections <- function(
   api.key,
   output.mode = "content"
@@ -97,7 +95,7 @@ listVSCollections <- function(
     stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   check <- constantCheck(
     c("api.key", "output.mode"),
@@ -110,7 +108,7 @@ listVSCollections <- function(
     check = check, env = environment()
   )
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

@@ -26,23 +26,23 @@
 #'
 #' @importFrom httr GET add_headers
 #' @importFrom jsonlite validate fromJSON
-#' @importFrom dplyr %>%
+#' @importFrom ArgumentCheck addWarning addError
 cedar.get <- function(api.key, url, ..., output.mode = "content"){
   if(missing(api.key))
     stop("No API key provided: see https://cedar.metadatacenter.org/profile.")
   if(missing(url))
     stop("No URL provided: required to target resources.")
 
-  result <- GET(
+  result <- httr::GET(
     url,
     ...,
-    add_headers(Authorization = paste("apiKey", api.key))
+    httr::add_headers(Authorization = paste("apiKey", api.key))
   )
 
   if(is.raw(result$content))
     result$content <- result$content %>% rawToChar
-  if(validate(result$content))
-    result$content <- result$content %>% fromJSON
+  if(jsonlite::validate(result$content))
+    result$content <- result$content %>% jsonlite::fromJSON
   message("* Request status:", result$status_code)
 
   # Output ====
@@ -68,6 +68,9 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
 #' The `check` argument.
 #'
 #' Check for each given argument in `...` that their length > 1.
+#'
+#' @noRd
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 checkLength <- function(..., check, env = .GlobalEnv){
   args <- as.list(...)
 
@@ -75,7 +78,7 @@ checkLength <- function(..., check, env = .GlobalEnv){
     arg.value <- get(arg, envir = .env)
     if(length(arg.value) > 1){
       assign(arg, arg.value, envir = .env)
-      addWarning(
+      ArgumentCheck::addWarning(
         msg= paste0("`",arg,"` argument had length>1: only the first element is used."),
         argcheck = check
       )
@@ -85,14 +88,10 @@ checkLength <- function(..., check, env = .GlobalEnv){
   return(check)
 }
 
-#' Constant checks
-#'
 #' These checks are found in every function of {cedarr}.
 #'
-#' @param ... list. A list of arguments to check for validity.
-#' @param check ArgCheck. An ArgCheck object from package {ArgumentCheck}.
-#' @param env environment. The environment in which args is being evaluated.
-#'
+#' @noRd
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 constantCheck <- function(..., check, env = .GlobalEnv){
   args <- as.list(...)
 
@@ -107,7 +106,7 @@ constantCheck <- function(..., check, env = .GlobalEnv){
       page.size = !is.numeric(arg.value),
       FALSE
     ))
-      addError(
+      ArgumentCheck::addError(
         msg = paste("Invalid type for", arg),
         argcheck = check
       )
@@ -119,7 +118,7 @@ constantCheck <- function(..., check, env = .GlobalEnv){
       page.size = as.integer(arg.value) == 0,
       FALSE
     ))
-      addError(
+      ArgumentCheck::addError(
         msg = paste("Invalid value for", arg),
         argcheck = check
       )

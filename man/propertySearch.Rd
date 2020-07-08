@@ -30,6 +30,9 @@ names in which to get the results of the query.}
 query in the property id, label, or the generated label (a label, auto-generated
 from the id). (defaults to FALSE)}
 
+\item{require.definitions}{logical. Filter results only to those that include
+definitions. (defaults to FALSE).}
+
 \item{output.mode}{character. "full" will return the whole response object
 (from {httr}) or "content" will fetch the interest values from the response
 object. Getting the whole object might be interesting to have a look at system
@@ -39,9 +42,6 @@ metadata, or in case of error to debug the connection. (defaults to "content")}
 
 \item{page.size}{integer. Number of results per page, capped at 50. (defaults
 to 50).}
-
-\item{require.definition}{logical. Filter results only to those that include
-definitions. (defaults to FALSE).}
 }
 \value{
 A search result with the properties corresponding to the query.
@@ -70,7 +70,7 @@ my.api.key <- readline()
 
 # Search for a property matching "has curation status"
 
-result <- cedarr::query(
+result <- cedarr::propertySearch(
   my.api.key,
   "has curation status",
   "ENVO"

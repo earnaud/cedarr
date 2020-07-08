@@ -64,9 +64,7 @@
 #' View(result)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
-#' @importFrom utils URLencode
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 accessValueSets <- function(
   api.key,
   vs.collection,
@@ -83,7 +81,7 @@ accessValueSets <- function(
     stop("No VS collection ID provided.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   check <- constantCheck(
     c("api.key", "output.mode", "page.index", "page.size"),
@@ -91,18 +89,18 @@ accessValueSets <- function(
   )
 
   if(!is.character(vs.collection) || is.na(vs.collection))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid VS collection name: must be a length-one character.",
       argcheck = check
     )
   if(isFALSE(is.character(id) || is.na(id)))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `id`: must be either NA or a character.",
       argcheck = check
     )
   else if(isFALSE(is.character(sub) || is.na(sub)) &&
       !sub %in% c(NA, NA_character_, "tree", "values", "value"))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `sub`: must be either NA or a character.",
       argcheck = check
     )
@@ -127,7 +125,7 @@ accessValueSets <- function(
       id <- paste0("/", id, "/values")
   }
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- ifelse(

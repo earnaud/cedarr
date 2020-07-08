@@ -67,8 +67,7 @@
 #' View(result)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 accessValues <- function(
   api.key,
   vs.collection,
@@ -90,7 +89,7 @@ operational !")
     stop("No value ID provided.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   check <- constantCheck(
     c("api.key", "output.mode", "page.index", "page.size"),
@@ -98,18 +97,18 @@ operational !")
   )
 
   if(!is.character(vs.collection) || is.na(vs.collection))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid VS collection name: must be a length-one character.",
       argcheck = check
     )
   if(!is.character(id) || is.na(id))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `id`: must be either a length-one character.",
       argcheck = check
     )
   else if(isFALSE(is.character(sub) || is.na(sub)) &&
       !sub %in% c(NA, NA_character_,"value-set", "tree", "all-values"))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `sub`: must be either NA or a character.",
       argcheck = check
     )
@@ -135,11 +134,11 @@ operational !")
       id <- paste0("/", id, "/all-values")
   }
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- ifelse(
-    is.nulll(id) || (!is.null(id) && sub == "all-values"),
+    is.null(id) || (!is.null(id) && sub == "all-values"),
     cedar.get(
       api.key,
       paste0(

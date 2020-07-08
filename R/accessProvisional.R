@@ -12,7 +12,7 @@
 #' (from {httr}) or "content" will fetch the interest values from the response
 #' object. Getting the whole object might be interesting to have a look at system
 #' metadata, or in case of error to debug the connection. (defaults to "content")
-#' @param page integer. Index of the page to be returned (defaults to 1st page).
+#' @param page.index integer. Index of the page to be returned (defaults to 1st page).
 #' @param page.size integer. Number of results per page, capped at 50. (defaults
 #' to 50).
 #'
@@ -48,8 +48,7 @@
 #' View(result)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 accessProvisional <- function(
   api.key,
   ontology,
@@ -64,7 +63,7 @@ accessProvisional <- function(
     stop("No ontology ID provided.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   check <- constantCheck(
     c("api.key", "output.mode", "page.index", "page.size"),
@@ -72,7 +71,7 @@ accessProvisional <- function(
   )
 
   if(isFALSE(is.character(ontology) || is.na(ontology)))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid type for `ontology`.",
       argcheck = check
     )
@@ -88,7 +87,7 @@ accessProvisional <- function(
   else if(is.character(ontology))
     ontology <- paste0("/", ontology)
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

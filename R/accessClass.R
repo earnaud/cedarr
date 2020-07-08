@@ -66,8 +66,7 @@
 #' View(result)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 #' @importFrom utils URLencode
 accessClass <- function(
   api.key,
@@ -85,7 +84,7 @@ accessClass <- function(
     stop("No class ID provided.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   check <- constantCheck(
     c("api.key", "output.mode"),
@@ -93,18 +92,18 @@ accessClass <- function(
   )
 
   if(!is.character(ontology) || is.na(ontology))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid type for `ontology`.",
       argcheck = check
     )
   if(!is.character(id) || is.na(id))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid type for `id`.",
       argcheck = check
     )
   if(isFALSE(is.character(sub) || is.na(sub)) ||
       (is.character(sub) && !is.na(sub) && !sub %in% c("tree", "children","descendants","parents")))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid type for `sub`.",
       argcheck = check
     )
@@ -115,7 +114,7 @@ accessClass <- function(
     check = check, env = environment()
   )
 
-  id <- URLencode(id, reserved = TRUE)
+  id <- utils::URLencode(id, reserved = TRUE)
 
   if(is.na(sub))
     sub <- NULL
@@ -124,7 +123,7 @@ accessClass <- function(
     sub <- paste0("/", sub)
   }
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

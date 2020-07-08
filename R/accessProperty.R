@@ -83,9 +83,7 @@
 #' View(result2)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
-#' @importFrom utils URLencode
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 accessProperty <- function(
   api.key,
   ontology,
@@ -100,7 +98,7 @@ accessProperty <- function(
     stop("No ontology ID provided.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   check <- constantCheck(
     c("api.key", "output.mode"),
@@ -108,12 +106,12 @@ accessProperty <- function(
   )
 
   if(!is.character(ontology) || is.na(ontology))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid type for `ontology`.",
       argcheck = check
     )
   if(isFALSE(is.character(id) || is.na(id)))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid type for `id`.",
       argcheck = check
     )
@@ -122,20 +120,20 @@ accessProperty <- function(
       grepl("^http", id) ||
       is.na(id)
   ))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `id`.",
       argcheck = check
     )
   else if(is.character(id) &&
       id != "roots"){
     if(isFALSE(is.character(sub) || is.na(sub)))
-      addError(
+      ArgumentCheck::addError(
         msg = "Invalid type for `sub`.",
         argcheck = check
       )
     else if(!sub %in% c(NA, NA_character_, "tree", "child", "children",
       "descendant", "descendants", "parent", "parents"))
-      addError(
+      ArgumentCheck::addError(
         msg = "Invalid value for `sub`.",
         argcheck = check
       )
@@ -158,7 +156,7 @@ accessProperty <- function(
     id <- paste0(c("", id, sub), collapse = "/")
   }
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

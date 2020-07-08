@@ -1,0 +1,15 @@
+R/accessClass.R:      (is.character(sub) && !is.na(sub) && !sub %in% c("tree", "children","descendants","parents")))
+R/accessClass.R:      sub %in% c("tree", "children","descendants","parents")){
+R/accessOntology.R:      !item %in% c(
+R/accessOntology.R:      !sub %in% c(NA, NA_character_, "root", "roots"))
+R/accessProperty.R:    id %in% c("root", "roots") ||
+R/accessProperty.R:    else if(!sub %in% c(NA, NA_character_, "tree", "child", "children",
+R/accessProperty.R:  else if(id %in% c("root", "roots"))
+R/accessRelation.R:      !output.mode %in% c("full", "content"))
+R/accessValueSets.R:      !sub %in% c(NA, NA_character_, "tree", "values", "value"))
+R/accessValues.R:      !sub %in% c(NA, NA_character_,"value-set", "tree", "all-values"))
+R/search.R:      !scope %in% c("all", "classes", "value_sets", "values"))
+R/utils.R:#' @importFrom dplyr %>%
+R/utils.R:    result$content <- result$content %>% rawToChar
+R/utils.R:    result$content <- result$content %>% jsonlite::fromJSON
+R/utils.R:      output.mode = !arg.value %in% c("full", "content"),

@@ -24,7 +24,7 @@
 #' geared towards type-ahead suggestions (defaults to FALSE).
 #' @param subtree.root.id character. URL for the class identifier
 #' that limits the search to the branch rooted on that class.
-#' @param source character. URL for the ontology for which the
+#' @param subtree.source character. URL for the ontology for which the
 #' subtree search will be performed. Not evaluated if
 #' `subtree.root.id` is not provided.
 #' @param maxDepth integer. Subtree depth.Not evaluated if
@@ -67,10 +67,8 @@
 #' View(result)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
-#' @importFrom utils URLencode
-search <- function(
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+cedarSearch <- function(
   api.key,
   query,
   sources = NA_character_,
@@ -90,7 +88,7 @@ search <- function(
     stop("No query provided.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   check <- constantCheck(
     c("api.key", "output.mode", "page.index", "page.size"),
@@ -98,43 +96,43 @@ search <- function(
   )
 
   if(!is.character(query) || query == "")
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid query: must be at least one word length.",
       argcheck = check
     )
   if(isFALSE(is.character(sources) || is.na(sources)))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid type for `sources`.",
       argcheck = check
     )
   if(!is.character(scope) ||
       length(scope) == 0 ||
       !scope %in% c("all", "classes", "value_sets", "values"))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `scope`. Must be one of:
       'all', 'classes', 'value_sets', 'values'.",
       argcheck = check
     )
   if(isFALSE(is.logical(suggest) || (isTRUE(suggest) || isFALSE(suggest))))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `suggest`.",
       argcheck = check
     )
   if(isFALSE(is.character(subtree.root.id) || is.na(subtree.root.id)))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `subtree.root.id`. Must be an URL for the target
       Class identifier.",
       argcheck = check
     )
   else {
     if(isFALSE(is.character(subtree.source) || is.na(subtree.source)))
-      addError(
+      ArgumentCheck::addError(
         msg = "Invalid value for `subtree.source`. Must be an URL for the
         ontology containing `subtree.root.id` class.",
         argcheck = check
       )
     if(isFALSE(as.integer(maxDepth) > 0))
-      addError(
+      ArgumentCheck::addError(
         msg = "Invalid value for `maxDepth`. Must be a positive integer.",
         argcheck = check
       )
@@ -158,7 +156,7 @@ search <- function(
     subtree.root.id <- URLencode(subtree.root.id, reserved = TRUE)
   }
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

@@ -46,8 +46,7 @@
 #' View(result)
 #'
 #' @export
-#'
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck addError addWarning
+#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
 accessRelation <- function(
   api.key,
   id,
@@ -63,23 +62,23 @@ operational !")
     stop("No relation ID provided.")
 
   # Invalid ====
-  check <- newArgCheck()
+  check <- ArgumentCheck::newArgCheck()
 
   if(!is.character(api.key))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid API key: must be a length-one character.
       See https://cedar.metadatacenter.org/profile.",
       argcheck = check
     )
   if(!is.character(id) || is.na(id))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `id`: must be either a length-one character.",
       argcheck = check
     )
   if(!is.character(output.mode) ||
       length(output.mode) == 0 ||
       !output.mode %in% c("full", "content"))
-    addError(
+    ArgumentCheck::addError(
       msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
       argcheck = check
     )
@@ -90,7 +89,7 @@ operational !")
     check = check, env = environment()
   )
 
-  finishArgCheck(check)
+  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(
