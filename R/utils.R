@@ -41,9 +41,9 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
   )
 
   if(is.raw(result$content))
-    result$content <- result$content %>% rawToChar
+    result$content <- result$content %>% rawToChar()
   if(jsonlite::validate(result$content))
-    result$content <- result$content %>% jsonlite::fromJSON
+    result$content <- result$content %>% jsonlite::fromJSON()
   message("* Request status:", result$status_code)
 
   # Output ====
