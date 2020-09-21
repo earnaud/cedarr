@@ -24,6 +24,7 @@
 #' If `output.mode = "content"`, the `content` item is directly returned, containing
 #' database metadata and the interesting information in the `collection` subitem.
 #'
+#' @importFrom dplyr %>%
 #' @importFrom httr GET add_headers
 #' @importFrom jsonlite validate fromJSON
 #' @importFrom ArgumentCheck addWarning addError
