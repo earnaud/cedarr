@@ -34,10 +34,12 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
   if(missing(url))
     stop("No URL provided: required to target resources.")
 
+  api.key <- checkApiKey(api.key)
+
   result <- httr::GET(
     url,
     ...,
-    httr::add_headers(Authorization = paste("apiKey", api.key))
+    httr::add_headers(Authorization = api.key)
   )
 
   if(is.raw(result$content))
@@ -127,4 +129,12 @@ constantCheck <- function(..., check, env = .GlobalEnv){
   })
 
   return(check)
+}
+
+#' check API key
+checkApiKey <- function(api.key) {
+  if(!grepl("^apiKey", api.key))
+    api.key <- sprintf("apiKey %s", api.key)
+
+  return(api.key)
 }

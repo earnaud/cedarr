@@ -103,16 +103,16 @@ accessOntology <- function(
       argcheck = check
     )
   else if(isFALSE(is.character(item) || is.na(item)) ||
-      !item %in% c(
-        NA, NA_character_,
-        "class", "classe", "classes",
-        "propert", "property", "properties"))
+          !item %in% c(
+            NA, NA_character_,
+            "class", "classe", "classes",
+            "propert", "property", "properties"))
     ArgumentCheck::addError(
       msg = "Invalid value for `item`.",
       argcheck = check
     )
   else if(!is.character(sub) ||
-      !sub %in% c(NA, NA_character_, "root", "roots"))
+          !sub %in% c(NA, NA_character_, "root", "roots"))
     ArgumentCheck::addError(
       msg = "Invalid value for `sub`.",
       argcheck = check
@@ -146,28 +146,29 @@ accessOntology <- function(
   ArgumentCheck::finishArgCheck(check)
 
   # Request ====
-  result <- ifelse(is.null(ontology),
+  url <- sprintf(
+    "https://terminology.metadatacenter.org/bioportal/ontologies%s",
+    ontology
+  )
+
+  message(sprintf("* Request URL: %s", url))
+
+  result <- if(is.null(ontology))
     cedar.get(
       api.key,
-      paste0(
-        "https://terminology.metadatacenter.org/bioportal/ontologies",
-        ontology
-      ),
+      url,
       query = list(
         page = page.index,
         page_size = page.size
       ),
       output.mode = output.mode
-    ),
+    )
+  else
     cedar.get(
       api.key,
-      paste0(
-        "https://terminology.metadatacenter.org/bioportal/ontologies",
-        ontology
-      ),
+      url,
       output.mode = output.mode
     )
-  )
 
   # Output ====
   return(result)
