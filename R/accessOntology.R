@@ -127,9 +127,8 @@ accessOntology <- function(
   if(is.na(ontology))
     ontology <- NULL
   else {
-    if(is.na(item))
-      ontology <- paste0("/", ontology)
-    else if(grepl("class", item)) {
+    ontology <- paste0("/", ontology)
+    if(grepl("class", item)) {
       if(is.na(sub))
         ontology <- paste0(ontology, "/classes")
       else if(grepl("root", sub))
@@ -146,10 +145,11 @@ accessOntology <- function(
   ArgumentCheck::finishArgCheck(check)
 
   # Request ====
-  url <- sprintf(
-    "https://terminology.metadatacenter.org/bioportal/ontologies%s",
+  url <- paste0(
+    "https://terminology.metadatacenter.org/bioportal/ontologies",
     ontology
-  )
+  ) %>%
+    gsub("//", "/", .)
 
   message(sprintf("* Request URL: %s", url))
 
