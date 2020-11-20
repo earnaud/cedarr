@@ -96,6 +96,7 @@ accessOntology <- function(
     check = check, env = environment()
   )
 
+  if(is.null(ontology)) ontology <- NA_character_
   if(isFALSE(is.character(ontology) || is.na(ontology)) || grepl("^ontologies", ontology))
     ArgumentCheck::addError(
       msg = "Invalid type for `ontology`. (string starting by \"ontologies\" are a reserved
