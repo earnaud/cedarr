@@ -96,7 +96,7 @@ accessOntology <- function(
     check = check, env = environment()
   )
 
-  if(is.null(ontology)) ontology <- NA_character_
+  ontology <- if(is.null(ontology)) NA_character_
   if(isFALSE(is.character(ontology) || is.na(ontology)))
     if(grepl("^ontologies", ontology))
       ArgumentCheck::addError(
