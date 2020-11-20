@@ -96,12 +96,14 @@ accessOntology <- function(
     check = check, env = environment()
   )
 
-  if(isFALSE(is.character(ontology) || is.na(ontology)) || grepl("^ontologies", ontology))
-    ArgumentCheck::addError(
-      msg = "Invalid type for `ontology`. (string starting by \"ontologies\" are a reserved
+  if(is.null(ontology)) ontology <- NA_character_
+  if(isFALSE(is.character(ontology) || is.na(ontology)))
+    if(grepl("^ontologies", ontology))
+      ArgumentCheck::addError(
+        msg = "Invalid type for `ontology`. (string starting by \"ontologies\" are a reserved
       term)",
-      argcheck = check
-    )
+        argcheck = check
+      )
   else if(isFALSE(is.character(item) || is.na(item)) ||
           !item %in% c(
             NA, NA_character_,
