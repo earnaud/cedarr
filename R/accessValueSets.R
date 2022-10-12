@@ -64,7 +64,7 @@
 #' View(result)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkNumber checkString
 accessValueSets <- function(
   api.key,
   vs.collection,
@@ -74,43 +74,21 @@ accessValueSets <- function(
   page.index = 1,
   page.size= 50
 ){
-  # Missing ====
-  if(missing(api.key))
-    stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
-  if(missing(vs.collection))
-    stop("No VS collection ID provided.")
 
-  # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  check <- constantCheck(
-    c("api.key", "output.mode", "page.index", "page.size"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing ====
+    !anyMissing(api.key, vs.collection),
+    # Invalid ====
+    checkString(api.key, pattern = "^apiKey"),
+    checkChoice(output.mode, c("full", "content")),
+    checkCharacter(vs.collection),
+    checkCharacter(id),
+    checkChoice(sub, c(NA, NA_character_, "tree", "values", "value")),
+    checkNumber(page.index),
+    checkNumber(page.size)
   )
-
-  if(!is.character(vs.collection) || is.na(vs.collection))
-    ArgumentCheck::addError(
-      msg = "Invalid VS collection name: must be a length-one character.",
-      argcheck = check
-    )
-  if(isFALSE(is.character(id) || is.na(id)))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `id`: must be either NA or a character.",
-      argcheck = check
-    )
-  else if(isFALSE(is.character(sub) || is.na(sub)) &&
-      !sub %in% c(NA, NA_character_, "tree", "values", "value"))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `sub`: must be either NA or a character.",
-      argcheck = check
-    )
 
   # Correction ====
-  check <- checkLength(
-    c("vs.collection", "id", "sub", "output.mode", "page.index","page.size"),
-    check = check, env = environment()
-  )
-
   if(is.na(id)){
     id <- NULL
     sub <- NULL
@@ -124,8 +102,6 @@ accessValueSets <- function(
     else if(grepl("valu", sub))
       id <- paste0("/", id, "/values")
   }
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- ifelse(

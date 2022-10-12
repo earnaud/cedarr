@@ -46,7 +46,7 @@
 #' View(result)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString
 accessRelation <- function(
   api.key,
   id,
@@ -55,41 +55,14 @@ accessRelation <- function(
   warning("DISCLAIMER: at current development stage of the package, this function is not
 operational !")
 
-  # Missing ====
-  if(missing(api.key))
-    stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
-  if(missing(id))
-    stop("No relation ID provided.")
-
-  # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  if(!is.character(api.key))
-    ArgumentCheck::addError(
-      msg = "Invalid API key: must be a length-one character.
-      See https://cedar.metadatacenter.org/profile.",
-      argcheck = check
-    )
-  if(!is.character(id) || is.na(id))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `id`: must be either a length-one character.",
-      argcheck = check
-    )
-  if(!is.character(output.mode) ||
-      length(output.mode) == 0 ||
-      !output.mode %in% c("full", "content"))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `output.mode`. Must be one of 'full' or 'content'.",
-      argcheck = check
-    )
-
-  # Correction ====
-  check <- checkLength(
-    c("id"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing ====
+    !anyMissing(c(api.key, id)),
+    # Invalid ====
+    checkString(api.key, pattern = "^apiKey"),
+    checkChoice(output.mode, c("full", "content")),
+    checkCharacter(id)
   )
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

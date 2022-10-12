@@ -10,7 +10,7 @@ cedar.get(api.key, url, ..., output.mode = "content")
 \item{api.key}{character. An API Key is required to access any
 API call. It is used within {cedarr} as a header for http
 requests. An API key is linked to a CEDAR account
-(https://cedar.metadatacenter.org/profile)}
+(https://cedar.metadatacenter.org/profile).}
 
 \item{url}{character. An URL to the CEDAR resource to query data from.}
 

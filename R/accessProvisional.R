@@ -48,7 +48,7 @@
 #' View(result)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkNumber checkString
 accessProvisional <- function(
   api.key,
   ontology,
@@ -56,38 +56,22 @@ accessProvisional <- function(
   page.index = 1,
   page.size = 50
 ){
-  # Missing ====
-  if(missing(api.key))
-    stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
-  if(missing(ontology))
-    stop("No ontology ID provided.")
-
-  # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  check <- constantCheck(
-    c("api.key", "output.mode", "page.index", "page.size"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing ====
+    !anyMissing(c(api.key, ontology)),
+    # Invalid ====
+    checkString(api.key, pattern = "^apiKey"),
+    checkChoice(output.mode, c("full", "content")),
+    checkNumber(page.index),
+    checkNumber(page.size),
+    checkString(ontology, na.ok = TRUE)
   )
-
-  if(isFALSE(is.character(ontology) || is.na(ontology)))
-    ArgumentCheck::addError(
-      msg = "Invalid type for `ontology`.",
-      argcheck = check
-    )
 
   # Correction ====
-  check <- checkLength(
-    c("api.key", "output.mode", "page.index","page.size"),
-    check = check, env = environment()
-  )
-
   if(is.na(ontology))
     sub <- NULL
   else if(is.character(ontology))
     ontology <- paste0("/", ontology)
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

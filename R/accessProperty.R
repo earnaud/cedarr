@@ -83,7 +83,7 @@
 #' View(result2)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString
 accessProperty <- function(
   api.key,
   ontology,
@@ -91,60 +91,20 @@ accessProperty <- function(
   sub = NA_character_, #
   output.mode = "content"
 ){
-  # Missing ====
-  if(missing(api.key))
-    stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
-  if(missing(ontology))
-    stop("No ontology ID provided.")
-
-  # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  check <- constantCheck(
-    c("api.key", "output.mode"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing ====
+    !anyMissing(c(api.key, ontology)),
+    # Invalid ====
+    checkString(api.key, pattern = "^apiKey"),
+    checkChoice(output.mode, c("full", "content")),
+    checkCharacter(ontology),
+    checkString(id, na.ok = TRUE, pattern = "^http|^roots?$"),
+    checkChoice(sub, c(NA, NA_character_, "tree", "child", "children",
+                       "descendant", "descendants", "parent", "parents"))
   )
-
-  if(!is.character(ontology) || is.na(ontology))
-    ArgumentCheck::addError(
-      msg = "Invalid type for `ontology`.",
-      argcheck = check
-    )
-  if(isFALSE(is.character(id) || is.na(id)))
-    ArgumentCheck::addError(
-      msg = "Invalid type for `id`.",
-      argcheck = check
-    )
-  else if(isFALSE(
-    id %in% c("root", "roots") ||
-      grepl("^http", id) ||
-      is.na(id)
-  ))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `id`.",
-      argcheck = check
-    )
-  else if(is.character(id) &&
-      id != "roots"){
-    if(isFALSE(is.character(sub) || is.na(sub)))
-      ArgumentCheck::addError(
-        msg = "Invalid type for `sub`.",
-        argcheck = check
-      )
-    else if(!sub %in% c(NA, NA_character_, "tree", "child", "children",
-      "descendant", "descendants", "parent", "parents"))
-      ArgumentCheck::addError(
-        msg = "Invalid value for `sub`.",
-        argcheck = check
-      )
-  }
 
   # Correction ====
-  check <- checkLength(
-    c("api.key", "ontology", "output.mode", "id", "sub"),
-    check = check, env = environment()
-  )
-
+  #
   if(is.na(id))
     id <- NULL
   else if(id %in% c("root", "roots"))
@@ -155,8 +115,6 @@ accessProperty <- function(
       sub <- NULL
     id <- paste0(c("", id, sub), collapse = "/")
   }
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

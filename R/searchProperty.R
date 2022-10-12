@@ -58,7 +58,7 @@
 #' View(result)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkNumber checkString checkLogical
 propertySearch <- function(
   api.key,
   query,
@@ -69,54 +69,23 @@ propertySearch <- function(
   page.index = 1,
   page.size= 50
 ){
-  # Missing ====
-  if(missing(api.key))
-    stop("No API key provided: see https://cedar.metadatacenter.org/profile.")
-  if(missing(query))
-    stop("No query provided.")
-
-  # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  check <- constantCheck(
-    c("api.key", "output.mode", "page.index", "page.size"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing ====
+    !anyMissing(c(api.key, query)),
+    # Invalid ====
+    checkString(api.key, pattern = "^apiKey"),
+    checkString(query, min.chars = 1),
+    checkString(sources, na.ok = TRUE),
+    checkChoice(output.mode, c("full", "content")),
+    checkNumber(page.index),
+    checkNumber(page.size),
+    checkLogical(exact.match),
+    checkLogical(require.definitions)
   )
-
-  if(!is.character(query) || query == "")
-    ArgumentCheck::addError(
-      msg = "Invalid query: must be at least one word length.",
-      argcheck = check
-    )
-  if(!is.character(sources) && !is.na(sources))
-    ArgumentCheck::addError(
-      msg = "Invalid type for `sources`.",
-      argcheck = check
-    )
-  if(!is.logical(exact.match) ||
-      !(isTRUE(exact.match) || isFALSE(exact.match)))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `exact.match`. Must be TRUE or FALSE.",
-      argcheck = check
-    )
-  if(!is.logical(require.definitions) ||
-      !(isTRUE(require.definitions) || isFALSE(require.definitions)))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `require.definitions`. Must be TRUE or FALSE.",
-      argcheck = check
-    )
 
   # Correction ====
   if(is.na(sources))
     sources <- NULL
-
-  check <- checkLength(
-    c("api.key", "exact.match","require.definitions","output.mode", "page.index",
-      "page.size"),
-    check = check, env = environment()
-  )
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

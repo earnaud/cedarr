@@ -67,7 +67,7 @@
 #' View(result)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkNumber checkString
 accessValues <- function(
   api.key,
   vs.collection,
@@ -80,45 +80,18 @@ accessValues <- function(
   warning("DISCLAIMER: at current development stage of the package, this function is not
 operational !")
 
-  # Missing ====
-  if(missing(api.key))
-    stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
-  if(missing(vs.collection))
-    stop("No VS collection ID provided.")
-  if(missing(id))
-    stop("No value ID provided.")
-
-  # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  check <- constantCheck(
-    c("api.key", "output.mode", "page.index", "page.size"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing ====
+    !anyMissing(c(api.key, vs.collection, id)),
+    # Invalid ====
+    checkString(api.key, pattern = "^apiKey"),
+    checkChoice(output.mode, c("full", "content")),
+    checkNumber(page.index),
+    checkNumber(page.size),
+    checkChoice(sub, c(NA, NA_character_,"value-set", "tree", "all-values"))
   )
-
-  if(!is.character(vs.collection) || is.na(vs.collection))
-    ArgumentCheck::addError(
-      msg = "Invalid VS collection name: must be a length-one character.",
-      argcheck = check
-    )
-  if(!is.character(id) || is.na(id))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `id`: must be either a length-one character.",
-      argcheck = check
-    )
-  else if(isFALSE(is.character(sub) || is.na(sub)) &&
-      !sub %in% c(NA, NA_character_,"value-set", "tree", "all-values"))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `sub`: must be either NA or a character.",
-      argcheck = check
-    )
 
   # Correction ====
-  check <- checkLength(
-    c("api.key", "vs.collection", "id", "sub", "output.mode", "page.index","page.size"),
-    check = check, env = environment()
-  )
-
   if(is.na(id)){
     id <- NULL
     sub <- NULL
@@ -133,8 +106,6 @@ operational !")
     else if(sub == "all-values")
       id <- paste0("/", id, "/all-values")
   }
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- ifelse(

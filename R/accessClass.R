@@ -66,7 +66,7 @@
 #' View(result)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkString checkChoice
 #' @importFrom utils URLencode
 accessClass <- function(
   api.key,
@@ -75,45 +75,18 @@ accessClass <- function(
   sub = NA_character_,
   output.mode = "content"
 ){
-  # Missing ====
-  if(missing(api.key))
-    stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
-  if(missing(ontology))
-    stop("No ontology ID provided.")
-  if(missing(id))
-    stop("No class ID provided.")
-
-  # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  check <- constantCheck(
-    c("api.key", "output.mode"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing ====
+    !anyMissing(c(api.key, ontology, id)),
+    # Invalid ====
+    checkString(api.key, pattern = "^apiKey"),
+    checkChoice(output.mode, c("full", "content")),
+    checkCharacter(ontology),
+    checkCharacter(id),
+    checkChoice(sub, c("tree", "children","descendants","parents"))
   )
-
-  if(!is.character(ontology) || is.na(ontology))
-    ArgumentCheck::addError(
-      msg = "Invalid type for `ontology`.",
-      argcheck = check
-    )
-  if(!is.character(id) || is.na(id))
-    ArgumentCheck::addError(
-      msg = "Invalid type for `id`.",
-      argcheck = check
-    )
-  if(isFALSE(is.character(sub) || is.na(sub)) ||
-      (is.character(sub) && !is.na(sub) && !sub %in% c("tree", "children","descendants","parents")))
-    ArgumentCheck::addError(
-      msg = "Invalid type for `sub`.",
-      argcheck = check
-    )
 
   # Correction ====
-  check <- checkLength(
-    c("api.key", "output.mode", "id", "sub", "ontology"),
-    check = check, env = environment()
-  )
-
   id <- utils::URLencode(id, reserved = TRUE)
 
   if(is.na(sub))
@@ -122,8 +95,6 @@ accessClass <- function(
       sub %in% c("tree", "children","descendants","parents")){
     sub <- paste0("/", sub)
   }
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

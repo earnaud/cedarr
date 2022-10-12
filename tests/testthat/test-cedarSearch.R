@@ -2,13 +2,12 @@ if(exists("my.api.key", envir = .GlobalEnv)){
   my.api.key <- get("my.api.key", envir = .GlobalEnv)
 
   test_that("Query: term = \"habitat\"", {
-    expect_equal(
+    expect_error(
       cedarr::cedarSearch(
         my.api.key,
         "habitat",
         output.mode = "full"
-      )$status_code,
-      200
+      )
     )
   })
 

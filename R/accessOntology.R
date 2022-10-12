@@ -74,7 +74,7 @@
 #' View(result)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString testNull
 accessOntology <- function(
   api.key,
   ontology = NA_character_,
@@ -84,51 +84,32 @@ accessOntology <- function(
   page.index = 1,
   page.size = 50
 ){
-  # Missing ====
-  if(missing(api.key))
-    stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
-
-  # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  check <- constantCheck(
-    c("api.key", "output.mode", "page.index", "page.size"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing ====
+    !anyMissing(api.key),
+    # Invalid ====
+    checkString(api.key, pattern = "^apiKey"),
+    checkChoice(output.mode, c("full", "content")),
+    checkCharacter(id),
+    checkChoice(sub, c(NA, NA_character_, "root", "roots")),
+    checkChoice(item, c(
+      NA, NA_character_,
+      "class", "classe", "classes",
+      "propert", "property", "properties"
+    ))
   )
 
-  ontology <- if(is.null(ontology)) NA_character_
-  if(isFALSE(is.character(ontology) || is.na(ontology)))
-    if(grepl("^ontologies", ontology))
-      ArgumentCheck::addError(
-        msg = "Invalid type for `ontology`. (string starting by \"ontologies\" are a reserved
-      term)",
-        argcheck = check
-      )
-  else if(isFALSE(is.character(item) || is.na(item)) ||
-          !item %in% c(
-            NA, NA_character_,
-            "class", "classe", "classes",
-            "propert", "property", "properties"))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `item`.",
-      argcheck = check
-    )
-  else if(!is.character(sub) ||
-          !sub %in% c(NA, NA_character_, "root", "roots"))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `sub`.",
-      argcheck = check
-    )
+  # Specific handling of ontology
+  assert(combine = "or",
+    checkString(ontology, na.ok = TRUE),
+    testNull(ontology)
+  )
 
   # Correction ====
-  check <- checkLength(
-    c("api.key", "ontology", "item", "sub", "output.mode", "page.index","page.size"),
-    check = check, env = environment()
-  )
 
   if(is.na(ontology))
     ontology <- NULL
-  else {
+  else if(!is.null(ontology)) {
     ontology <- paste0("/", ontology)
     if(grepl("class", item)) {
       if(is.na(sub))
@@ -143,8 +124,6 @@ accessOntology <- function(
         ontology <- paste0(ontology, "/properties/roots")
     }
   }
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   url <- paste0(

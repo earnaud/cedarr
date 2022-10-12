@@ -27,30 +27,18 @@
 #' View(result1)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString
 listValueSets <- function(
   api.key,
   output.mode = "content"
 ){
-  # Missing ====
-  if(missing(api.key))
-    stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
-
-  # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  check <- constantCheck(
-    c("api.key", "output.mode"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing ====
+    !anyMissing(api.key),
+    # Invalid ====
+    checkString(api.key, pattern = "^apiKey"),
+    checkChoice(output.mode, c("full", "content"))
   )
-
-  # Correction ====
-  check <- checkLength(
-    "output.mode",
-    check = check, env = environment()
-  )
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(
@@ -85,30 +73,18 @@ listValueSets <- function(
 #' View(result2)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString
 listVSCollections <- function(
   api.key,
   output.mode = "content"
 ){
-  # Missing ====
-  if(missing(api.key))
-    stop("No API client provided: see https://cedar.metadatacenter.org/profile.")
-
-  # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  check <- constantCheck(
-    c("api.key", "output.mode"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing ====
+    !anyMissing(api.key),
+    # Invalid ====
+    checkString(api.key, pattern = "^apiKey"),
+    checkChoice(output.mode, c("full", "content"))
   )
-
-  # Correction ====
-  check <- checkLength(
-    "output.mode",
-    check = check, env = environment()
-  )
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(

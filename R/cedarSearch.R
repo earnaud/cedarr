@@ -67,7 +67,7 @@
 #' View(result)
 #'
 #' @export
-#' @importFrom ArgumentCheck newArgCheck addError finishArgCheck
+#' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkNumber checkString checkLogical
 cedarSearch <- function(
   api.key,
   query,
@@ -81,72 +81,27 @@ cedarSearch <- function(
   page.index = 1,
   page.size= 50
 ){
-  # Missing ====
-  if(missing(api.key))
-    stop("No API key provided: see https://cedar.metadatacenter.org/profile.")
-  if(missing(query))
-    stop("No query provided.")
-
   # Invalid ====
-  check <- ArgumentCheck::newArgCheck()
-
-  check <- constantCheck(
-    c("api.key", "output.mode", "page.index", "page.size"),
-    check = check, env = environment()
+  assert(combine = "and",
+    # Missing
+    !anyMissing(c(api.key, query)),
+    # Invalid
+    checkString(api.key, pattern = "^apiKey"),
+    checkCharacter(query, min.chars = 1),
+    checkString(sources, na.ok = FALSE),
+    checkLogical(suggest),
+    checkChoice(scope, c("all", "classes", "value_sets", "values")),
+    checkChoice(output.mode, c("full", "content")),
+    checkNumber(page.index),
+    checkNumber(page.size),
+    checkString(subtree.root.id, na.ok = TRUE),
+    checkString(subtree.source, na.ok = TRUE),
+    checkNumber(maxDepth, lower = 0)
   )
-
-  if(!is.character(query) || query == "")
-    ArgumentCheck::addError(
-      msg = "Invalid query: must be at least one word length.",
-      argcheck = check
-    )
-  if(isFALSE(is.character(sources) || is.na(sources)))
-    ArgumentCheck::addError(
-      msg = "Invalid type for `sources`.",
-      argcheck = check
-    )
-  if(!is.character(scope) ||
-      length(scope) == 0 ||
-      !scope %in% c("all", "classes", "value_sets", "values"))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `scope`. Must be one of:
-      'all', 'classes', 'value_sets', 'values'.",
-      argcheck = check
-    )
-  if(isFALSE(is.logical(suggest) || (isTRUE(suggest) || isFALSE(suggest))))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `suggest`.",
-      argcheck = check
-    )
-  if(isFALSE(is.character(subtree.root.id) || is.na(subtree.root.id)))
-    ArgumentCheck::addError(
-      msg = "Invalid value for `subtree.root.id`. Must be an URL for the target
-      Class identifier.",
-      argcheck = check
-    )
-  else {
-    if(isFALSE(is.character(subtree.source) || is.na(subtree.source)))
-      ArgumentCheck::addError(
-        msg = "Invalid value for `subtree.source`. Must be an URL for the
-        ontology containing `subtree.root.id` class.",
-        argcheck = check
-      )
-    if(isFALSE(as.integer(maxDepth) > 0))
-      ArgumentCheck::addError(
-        msg = "Invalid value for `maxDepth`. Must be a positive integer.",
-        argcheck = check
-      )
-  }
 
   # Correction ====
   if(is.na(sources))
     sources <- NULL
-
-  check <- checkLength(
-    c("api.key", "scope","suggest","output.mode", "subtree.root.id",
-      "subtree.source", "maxDepth", "page.index","page.size"),
-    check = check, env = environment()
-  )
 
   if(is.na(subtree.root.id)){
     subtree.root.id <- NULL
@@ -155,8 +110,6 @@ cedarSearch <- function(
   else {
     subtree.root.id <- URLencode(subtree.root.id, reserved = TRUE)
   }
-
-  ArgumentCheck::finishArgCheck(check)
 
   # Request ====
   result <- cedar.get(
