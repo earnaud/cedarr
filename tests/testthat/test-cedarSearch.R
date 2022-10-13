@@ -1,7 +1,7 @@
 if(exists("my.api.key", envir = .GlobalEnv)){
   my.api.key <- get("my.api.key", envir = .GlobalEnv)
 
-  test_that("Query: term = \"habitat\"", {
+  test_that("Query: term = \"habitat\" returns error", {
     expect_error(
       cedarr::cedarSearch(
         my.api.key,
@@ -11,7 +11,7 @@ if(exists("my.api.key", envir = .GlobalEnv)){
     )
   })
 
-  test_that("Query: query = \"habitat\" sources = \"ENVO\"", {
+  test_that("Query: query = \"habitat\" sources = \"ENVO\" is valid", {
     expect_equal(
       cedarr::cedarSearch(
         api.key = my.api.key,

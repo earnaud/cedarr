@@ -1,12 +1,8 @@
 if(exists("my.api.key", envir = .GlobalEnv)){
   my.api.key <- get("my.api.key", envir = .GlobalEnv)
 
-  # True positive
-  test_that("Accessing all provisional classes is valid.", {
-    expect_equal(
-      accessProvisional(my.api.key)$status_code,
-      200
-    )
+  test_that("<test title> is valid / returns error.", {
+    # test
   })
 } else {
   stop("Set a variable called \"my.api.key\" for tests purposes.")

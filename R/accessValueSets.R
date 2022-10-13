@@ -77,7 +77,7 @@ accessValueSets <- function(
 
   assert(combine = "and",
     # Missing ====
-    !anyMissing(api.key, vs.collection),
+    !anyMissing(c(api.key, vs.collection)),
     # Invalid ====
     checkString(api.key, pattern = "^apiKey"),
     checkChoice(output.mode, c("full", "content")),
@@ -101,11 +101,12 @@ accessValueSets <- function(
       id <- paste0("/", id, "/tree")
     else if(grepl("valu", sub))
       id <- paste0("/", id, "/values")
+    else
+      id <- NULL
   }
 
   # Request ====
-  result <- ifelse(
-    is.null(id) || isTRUE(!is.null(id) && sub == "values"),
+  result <- if(is.null(id) || isTRUE(!is.null(id) && sub == "values"))
     cedar.get(
       api.key,
       paste0(
@@ -119,7 +120,8 @@ accessValueSets <- function(
         page_size = as.integer(page.size)
       ),
       output.mode = output.mode
-    ),
+    )
+  else
     cedar.get(
       api.key,
       paste0(
@@ -130,7 +132,6 @@ accessValueSets <- function(
       ),
       output.mode = output.mode
     )
-  )
 
   # Output ====
   return(result)

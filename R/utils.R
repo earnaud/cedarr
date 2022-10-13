@@ -37,6 +37,8 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
     # ... shall already be checked before
   )
 
+  message(sprintf("* Request URL: %s", url))
+
   result <- httr::GET(
     url,
     ...,
@@ -47,10 +49,13 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
     result$content <- result$content %>% rawToChar()
   if(jsonlite::validate(result$content))
     result$content <- result$content %>% jsonlite::fromJSON()
+
   message("* Request status:", result$status_code)
 
   # Output ====
-  if(output.mode == "full" || result$status_code != "200")
+  if(result$status_code != "200")
+    stop(sprintf("Query returned code %s", result$status_code))
+  else if(output.mode == "full")
     return(result)
   else
     return(result$content)

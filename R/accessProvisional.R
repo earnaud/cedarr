@@ -51,14 +51,14 @@
 #' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkNumber checkString
 accessProvisional <- function(
   api.key,
-  ontology,
+  ontology = NA_character_,
   output.mode = "content",
   page.index = 1,
   page.size = 50
 ){
   assert(combine = "and",
     # Missing ====
-    !anyMissing(c(api.key, ontology)),
+    !anyMissing(api.key),
     # Invalid ====
     checkString(api.key, pattern = "^apiKey"),
     checkChoice(output.mode, c("full", "content")),
@@ -69,18 +69,18 @@ accessProvisional <- function(
 
   # Correction ====
   if(is.na(ontology))
-    sub <- NULL
-  else if(is.character(ontology))
-    ontology <- paste0("/", ontology)
+    url <- "https://terminology.metadatacenter.org/bioportal/classes/provisional"
+  else # ontology is character
+    url <- paste0(
+      "https://terminology.metadatacenter.org/bioportal/ontologies/",
+      ontology,
+      "/classes/provisional"
+    )
 
   # Request ====
   result <- cedar.get(
     api.key,
-    paste0(
-      "https://terminology.metadatacenter.org/bioportal/ontologies",
-      ontology,
-      "/classes/provisional"
-    ),
+    url,
     query = list(
       page = page.index,
       page_size = page.size

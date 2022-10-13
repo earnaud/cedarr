@@ -83,7 +83,7 @@ accessClass <- function(
     checkChoice(output.mode, c("full", "content")),
     checkCharacter(ontology),
     checkCharacter(id),
-    checkChoice(sub, c("tree", "children","descendants","parents"))
+    checkChoice(sub, c(NA, NA_character_, "tree", "children","descendants","parents"))
   )
 
   # Correction ====

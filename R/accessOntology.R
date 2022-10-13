@@ -90,7 +90,6 @@ accessOntology <- function(
     # Invalid ====
     checkString(api.key, pattern = "^apiKey"),
     checkChoice(output.mode, c("full", "content")),
-    checkCharacter(id),
     checkChoice(sub, c(NA, NA_character_, "root", "roots")),
     checkChoice(item, c(
       NA, NA_character_,
@@ -131,8 +130,6 @@ accessOntology <- function(
     ontology
   ) %>%
     gsub("//", "/", .)
-
-  message(sprintf("* Request URL: %s", url))
 
   result <- if(is.null(ontology))
     cedar.get(
