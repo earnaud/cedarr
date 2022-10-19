@@ -2,7 +2,7 @@
 #'
 #' Get access to all or part of the value sets by VS collection.
 #'
-#' @param api.key character. An API Key is required to access any
+#' @param api_key character. An API Key is required to access any
 #' API call. It is used within {cedarr} as a header for http
 #' requests. An API key is linked to a CEDAR account
 #' (https://cedar.metadatacenter.org/profile)
@@ -11,7 +11,7 @@
 #' Not providing it (setting it to NA) will list all value sets in the `vs.collection`.
 #' @param sub character. A sub-item to fetch from the value: can be NA, "tree",
 #' or "values". Not evaluated if `id` is set to NA.
-#' @param output.mode character. "full" will return the whole
+#' @param output_mode character. "full" will return the whole
 #' response object (from {httr}) or "content" will fetch the
 #' interest values from the response object. Getting the whole
 #' object might be interesting to have a look at system metadata,
@@ -45,19 +45,19 @@
 #'   If `sub` = "values", retrieve the value set's values.}
 #' }
 #'
-#' If `output.mode = "full"`, the whole http response object (see httr::response).
+#' If `output_mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
 #' which contains the wanted result.
 #'
-#' If `output.mode = "content"`, the `content` item is directly returned, containing
+#' If `output_mode = "content"`, the `content` item is directly returned, containing
 #' database metadata and the interesting information in the `collection` subitem.
 #'
 #' @examples
 #' \dontrun{
-#' my.api.key <- readline()
+#' my_api_key <- readline()
 #'
 #' result <- cedarr::accessValueSets(
-#'   my.api.key,
+#'   my_api_key,
 #'   vs.collection = "CEDARVS",
 #'   id = "http://www.semanticweb.org/jgraybeal/ontologies/2015/7/cedarvaluesets#Study_File_Type"
 #' )
@@ -68,21 +68,21 @@
 #' @export
 #' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkNumber checkString
 accessValueSets <- function(
-  api.key,
+  api_key,
   vs.collection,
   id = NA_character_,
   sub = NA_character_,
-  output.mode = "content",
+  output_mode = "content",
   page.index = 1,
   page.size= 50
 ){
 
   assert(combine = "and",
     # Missing ====
-    !anyMissing(c(api.key, vs.collection)),
+    !anyMissing(c(api_key, vs.collection)),
     # Invalid ====
-    checkString(api.key, pattern = "^apiKey"),
-    checkChoice(output.mode, c("full", "content")),
+    checkString(api_key, pattern = "^apiKey"),
+    checkChoice(output_mode, c("full", "content")),
     checkCharacter(vs.collection),
     checkCharacter(id),
     checkChoice(sub, c(NA, NA_character_, "tree", "values", "value")),
@@ -109,8 +109,8 @@ accessValueSets <- function(
 
   # Request ====
   result <- if(is.null(id) || isTRUE(!is.null(id) && sub == "values"))
-    cedar.get(
-      api.key,
+    cedarGet(
+      api_key,
       paste0(
         "https://terminology.metadatacenter.org/bioportal/vs-collections/",
         vs.collection,
@@ -121,18 +121,18 @@ accessValueSets <- function(
         page = as.integer(page.index),
         page_size = as.integer(page.size)
       ),
-      output.mode = output.mode
+      output_mode = output_mode
     )
   else
-    cedar.get(
-      api.key,
+    cedarGet(
+      api_key,
       paste0(
         "https://terminology.metadatacenter.org/bioportal/vs-collections/",
         vs.collection,
         "/value-sets",
         id
       ),
-      output.mode = output.mode
+      output_mode = output_mode
     )
 
   # Output ====

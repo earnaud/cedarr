@@ -1,5 +1,5 @@
-if(exists("my.api.key", envir = .GlobalEnv)){
-  my.api.key <- get("my.api.key", envir = .GlobalEnv)
+if(exists("my_api_key", envir = .GlobalEnv)){
+  my_api_key <- get("my_api_key", envir = .GlobalEnv)
 
 
   # True positive
@@ -10,13 +10,13 @@ if(exists("my.api.key", envir = .GlobalEnv)){
     sapply(list("patate", NULL), \(.id){
       expect_error(
         accessRelation(
-          api.key = my.api.key,
+          api_key = my_api_key,
           id = .id,
-          output.mode = "full"
+          output_mode = "full"
         )
       )
     })
   })
 } else {
-  stop("Set a variable called \"my.api.key\" for tests purposes.")
+  stop("Set a variable called \"my_api_key\" for tests purposes.")
 }

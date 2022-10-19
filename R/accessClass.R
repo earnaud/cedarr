@@ -3,7 +3,7 @@
 #' Access classes (including both regular and provisional) by ontology and class
 #' id.
 #'
-#' @param api.key character. An API Key is required to access any
+#' @param api_key character. An API Key is required to access any
 #' API call. It is used within {cedarr} as a header for http
 #' requests. An API key is linked to a CEDAR account
 #' (https://cedar.metadatacenter.org/profile)
@@ -12,7 +12,7 @@
 #' (item `@id` in the result of accessOntology())
 #' @param sub character. Class content ID to retrieve. Can be:
 #' NA, "tree", "children", "descendants" or "parents".
-#' @param output.mode character. "full" will return the whole
+#' @param output_mode character. "full" will return the whole
 #' response object (from {httr}) or "content" will fetch the
 #' interest values from the response object. Getting the whole
 #' object might be interesting to have a look at system metadata,
@@ -46,20 +46,20 @@
 #' Setting `sub` to "parents" will return the class coming before the target
 #' class in its ontology.
 #'
-#' If `output.mode = "full"`, the whole http response object (see httr::response).
+#' If `output_mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
 #' which contains the wanted result.
 #'
-#' If `output.mode = "content"`, the `content` item is directly returned, containing
+#' If `output_mode = "content"`, the `content` item is directly returned, containing
 #' database metadata and the interesting information in the `collection` subitem.
 #'
 #' @examples
 #' \dontrun{
-#' my.api.key <- readline()
+#' my_api_key <- readline()
 #'
 #' # Fetch 'biome' class in ENVO
 #' result <- cedarr::accessClass(
-#'   my.api.key,
+#'   my_api_key,
 #'   "ENVO",
 #'   "http://purl.obolibrary.org/obo/ENVO_00000428"
 #' )
@@ -71,18 +71,18 @@
 #' @importFrom checkmate assert anyMissing checkCharacter checkString checkChoice
 #' @importFrom utils URLencode
 accessClass <- function(
-  api.key,
+  api_key,
   ontology,
   id,
   sub = NA_character_,
-  output.mode = "content"
+  output_mode = "content"
 ){
   assert(combine = "and",
     # Missing ====
-    !anyMissing(c(api.key, ontology, id)),
+    !anyMissing(c(api_key, ontology, id)),
     # Invalid ====
-    checkString(api.key, pattern = "^apiKey"),
-    checkChoice(output.mode, c("full", "content")),
+    checkString(api_key, pattern = "^apiKey"),
+    checkChoice(output_mode, c("full", "content")),
     checkCharacter(ontology),
     checkCharacter(id),
     checkChoice(sub, c(NA, NA_character_, "tree", "children","descendants","parents"))
@@ -99,8 +99,8 @@ accessClass <- function(
   }
 
   # Request ====
-  result <- cedar.get(
-    api.key,
+  result <- cedarGet(
+    api_key,
     paste0(
       "https://terminology.metadatacenter.org/bioportal/ontologies/",
       ontology,
@@ -108,7 +108,7 @@ accessClass <- function(
       id,
       sub
     ),
-    output.mode = output.mode
+    output_mode = output_mode
   )
 
   # Output ====

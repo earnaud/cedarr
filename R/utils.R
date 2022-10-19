@@ -2,13 +2,13 @@
 #'
 #' Internal function wrapping the GET method.
 #'
-#' @param api.key character. An API Key is required to access any
+#' @param api_key character. An API Key is required to access any
 #' API call. It is used within {cedarr} as a header for http
 #' requests. An API key is linked to a CEDAR account
 #' (https://cedar.metadatacenter.org/profile).
 #' @param url character. An URL to the CEDAR resource to query data from.
 #' @param ... arguments to input in the request body.
-#' @param output.mode character. "full" will return the whole
+#' @param output_mode character. "full" will return the whole
 #' response object (from {httr}) or "content" will fetch the
 #' interest values from the response object. Getting the whole
 #' object might be interesting to have a look at system metadata,
@@ -17,11 +17,11 @@
 #'
 #' @return
 #'
-#' If `output.mode = "full"`, the whole http response object (see httr::response).
+#' If `output_mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
 #' which contains the wanted result.
 #'
-#' If `output.mode = "content"`, the `content` item is directly returned, containing
+#' If `output_mode = "content"`, the `content` item is directly returned, containing
 #' database metadata and the interesting information in the `collection` subitem.
 #'
 #' For examples, see access*() functions from this package.
@@ -30,12 +30,12 @@
 #' @importFrom httr GET add_headers
 #' @importFrom jsonlite validate fromJSON
 #' @importFrom checkmate assert anyMissing checkString
-cedar.get <- function(api.key, url, ..., output.mode = "content"){
+cedarGet <- function(api_key, url, ..., output_mode = "content"){
   assert(combine = "and",
     # Missing ====
-    !anyMissing(c(api.key, url)),
+    !anyMissing(c(api_key, url)),
     # Invalid
-    checkString(api.key, pattern = "^apiKey")
+    checkString(api_key, pattern = "^apiKey")
     # ... shall already be checked before
   )
 
@@ -44,7 +44,7 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
   result <- httr::GET(
     url,
     ...,
-    httr::add_headers(Authorization = api.key)
+    httr::add_headers(Authorization = api_key)
   )
 
   if(is.raw(result$content))
@@ -57,7 +57,7 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
   # Output ====
   if(result$status_code != "200")
     stop(sprintf("Query returned code %s", result$status_code))
-  else if(output.mode == "full")
+  else if(output_mode == "full")
     return(result)
   else
     return(result$content)
@@ -107,15 +107,15 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
 #
 #     # Check type
 #     assert(switch(arg,
-#       api.key = checkClass(arg.value, "character"),
-#       output.mode = checkClass(arg.value, "character"),
+#       api_key = checkClass(arg.value, "character"),
+#       output_mode = checkClass(arg.value, "character"),
 #       page.index = checkClass(arg.value, "numeric"),
 #       page.size = checkClass(arg.value, "numeric"),
 #     ))
 #
 #     # Check value
 #     if(switch(arg,
-#       output.mode = !arg.value %in% c("full", "content"),
+#       output_mode = !arg.value %in% c("full", "content"),
 #       page.index = as.integer(arg.value) == 0,
 #       page.size = as.integer(arg.value) == 0,
 #       FALSE
@@ -132,9 +132,9 @@ cedar.get <- function(api.key, url, ..., output.mode = "content"){
 
 #' check API key
 #' @noRd
-checkApiKey <- function(api.key) {
-  if(!grepl("^apiKey", api.key))
-    api.key <- sprintf("apiKey %s", api.key)
+checkApiKey <- function(api_key) {
+  if(!grepl("^apiKey", api_key))
+    api_key <- sprintf("apiKey %s", api_key)
 
-  return(api.key)
+  return(api_key)
 }

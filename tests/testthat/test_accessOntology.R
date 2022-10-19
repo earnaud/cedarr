@@ -1,12 +1,12 @@
-if(exists("my.api.key", envir = .GlobalEnv)){
-  my.api.key <- get("my.api.key", envir = .GlobalEnv)
+if(exists("my_api_key", envir = .GlobalEnv)){
+  my_api_key <- get("my_api_key", envir = .GlobalEnv)
 
   # True positive
   test_that("Access Ontology without target is valid", {
     expect_equal(
       accessOntology(
-        api.key = my.api.key,
-        output.mode = "full"
+        api_key = my_api_key,
+        output_mode = "full"
       )$status_code,
       200
     )
@@ -16,11 +16,11 @@ if(exists("my.api.key", envir = .GlobalEnv)){
     sapply(list("classes", NA_character_) , \(.item) {
       expect_equal(
         accessOntology(
-          my.api.key,
+          my_api_key,
           "ENVO",
           item = .item,
           sub = "roots",
-          output.mode = "full"
+          output_mode = "full"
         )$status_code,
         200
       )
@@ -32,15 +32,15 @@ if(exists("my.api.key", envir = .GlobalEnv)){
     sapply(list("patate", NULL) , \(.item) {
       expect_error(
         accessOntology(
-          my.api.key,
+          my_api_key,
           "ENVO",
           item = .item,
           sub = "roots",
-          output.mode = "full"
+          output_mode = "full"
         )
       )
     })
   })
 } else {
-  stop("Set a variable called \"my.api.key\" for tests purposes.")
+  stop("Set a variable called \"my_api_key\" for tests purposes.")
 }

@@ -2,7 +2,7 @@
 #'
 #' Function to access the CEDAR properties suite.
 #'
-#' @param api.key  character. An API Key is required to access any
+#' @param api_key  character. An API Key is required to access any
 #' API call. It is used within {cedarr} as a header for http
 #' requests. An API key is linked to a CEDAR account
 #' (https://cedar.metadatacenter.org/profile)
@@ -13,7 +13,7 @@
 #' @param sub character. Either NA to get the precise property alone, or one
 #' among "tree", "children", "descendants", "parents" to get related properties
 #' according to this value. Not evaluated if `id` is set to NA or "roots".
-#' @param output.mode character. "full" will return the whole
+#' @param output_mode character. "full" will return the whole
 #' response object (from {httr}) or "content" will fetch the
 #' interest values from the response object. Getting the whole
 #' object might be interesting to have a look at system metadata,
@@ -50,21 +50,21 @@
 #'   defined previously to the one targeted if `sub` = "parents".}
 #' }
 #'
-#' If `output.mode = "full"`, the whole http response object (see httr::response).
+#' If `output_mode = "full"`, the whole http response object (see httr::response).
 #' It is structured as a list with response metadata wrapping the `content` item
 #' which contains the wanted result.
 #'
-#' If `output.mode = "content"`, the `content` item is directly returned, containing
+#' If `output_mode = "content"`, the `content` item is directly returned, containing
 #' database metadata and the interesting information in the `collection` subitem.
 #'
 #' @examples
 #' \dontrun{
-#' my.api.key <- readline()
+#' my_api_key <- readline()
 #'
 #' # Query 1: list the roots properties in ENVO
 #'
 #' result1 <- cedarr::accessProperty(
-#'   my.api.key,
+#'   my_api_key,
 #'   "ENVO",
 #'   id = "roots",
 #'   sub = "smurf" # ignored
@@ -76,7 +76,7 @@
 #' # Query 2: get the parents properties for "alternative term" in ENVO
 #'
 #' result2 <- cedarr::accessProperty(
-#'   my.api.key,
+#'   my_api_key,
 #'   "ENVO",
 #'   id = "http://purl.obolibrary.org/obo/IAO_0000118",
 #'   sub = "parents"
@@ -88,18 +88,18 @@
 #' @export
 #' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString
 accessProperty <- function(
-  api.key,
+  api_key,
   ontology,
   id = NA_character_, # NA "roots" or ID
   sub = NA_character_, #
-  output.mode = "content"
+  output_mode = "content"
 ){
   assert(combine = "and",
     # Missing ====
-    !anyMissing(c(api.key, ontology)),
+    !anyMissing(c(api_key, ontology)),
     # Invalid ====
-    checkString(api.key, pattern = "^apiKey"),
-    checkChoice(output.mode, c("full", "content")),
+    checkString(api_key, pattern = "^apiKey"),
+    checkChoice(output_mode, c("full", "content")),
     checkCharacter(ontology),
     checkString(id, na.ok = TRUE, pattern = "^http|^roots?$"),
     checkChoice(sub, c(NA, NA_character_, "tree", "child", "children",
@@ -120,15 +120,15 @@ accessProperty <- function(
   }
 
   # Request ====
-  result <- cedar.get(
-    api.key,
+  result <- cedarGet(
+    api_key,
     paste0(
       "https://terminology.metadatacenter.org/bioportal/ontologies/",
       ontology,
       "/properties",
       id
     ),
-    output.mode = output.mode
+    output_mode = output_mode
   )
 
   # Output ====
