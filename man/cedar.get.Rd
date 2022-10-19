@@ -30,6 +30,8 @@ which contains the wanted result.
 
 If \code{output.mode = "content"}, the \code{content} item is directly returned, containing
 database metadata and the interesting information in the \code{collection} subitem.
+
+For examples, see access*() functions from this package.
 }
 \description{
 Internal function wrapping the GET method.

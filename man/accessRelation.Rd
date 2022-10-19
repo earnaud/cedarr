@@ -42,13 +42,3 @@ This function matches the following queries from the Swagger UI
 \item{\verb{/relations/\{id\}}}
 }
 }
-\examples{
-my.api.key <- readline()
-
-result <- cedarr::accessRelation(
-  my.api.key,
-  id = ???
-)
-View(result)
-
-}

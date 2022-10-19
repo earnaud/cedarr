@@ -43,6 +43,7 @@ Find all value sets or value sets collections.
 }}
 
 \examples{
+\dontrun{
 my.api.key <- readline()
 
 result1 <- cedarr::listValueSets(
@@ -50,12 +51,16 @@ result1 <- cedarr::listValueSets(
 )
 
 View(result1)
+}
 
+\dontrun{
+my.api.key <- readline()
 
 result2 <- cedarr::listVSCollections(
   my.api.key,
 )
 
 View(result2)
+}
 
 }

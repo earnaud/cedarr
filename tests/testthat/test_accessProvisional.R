@@ -4,7 +4,7 @@ if(exists("my.api.key", envir = .GlobalEnv)){
   # True positive
   test_that("Accessing all provisional classes is valid.", {
     expect_equal(
-      accessProvisional(my.api.key)$status_code,
+      accessProvisional(my.api.key, output.mode = "full")$status_code,
       200
     )
   })

@@ -61,6 +61,7 @@
 #' database metadata and the interesting information in the `collection` subitem.
 #'
 #' @examples
+#' \dontrun{
 #' my.api.key <- readline()
 #'
 #' # Find the root classes of ENVO
@@ -72,6 +73,7 @@
 #' )
 #'
 #' View(result)
+#' }
 #'
 #' @export
 #' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString testNull
@@ -129,7 +131,7 @@ accessOntology <- function(
     "https://terminology.metadatacenter.org/bioportal/ontologies",
     ontology
   ) %>%
-    gsub("//", "/", .)
+    gsub(pattern = "//", replacement = "/")
 
   result <- if(is.null(ontology))
     cedar.get(

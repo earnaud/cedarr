@@ -81,6 +81,7 @@ arguments. The requests for \code{item = "properties"} are identical to some
 available in \code{accessProperty()}.
 }
 \examples{
+\dontrun{
 my.api.key <- readline()
 
 # Find the root classes of ENVO
@@ -92,5 +93,6 @@ result <- cedarr::accessOntology(
 )
 
 View(result)
+}
 
 }

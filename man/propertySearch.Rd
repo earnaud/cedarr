@@ -66,6 +66,7 @@ This function matches the following query from the Swagger UI
 }
 }
 \examples{
+\dontrun{
 my.api.key <- readline()
 
 # Search for a property matching "has curation status"
@@ -77,5 +78,6 @@ result <- cedarr::propertySearch(
 )
 
 View(result)
+}
 
 }

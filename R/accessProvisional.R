@@ -38,6 +38,7 @@
 #' database metadata and the interesting information in the `collection` subitem.
 #'
 #' @examples
+#' \dontrun{
 #' my.api.key <- readline()
 #'
 #' result <- cedarr::accessProvisional(
@@ -46,6 +47,7 @@
 #' )
 #'
 #' View(result)
+#' }
 #'
 #' @export
 #' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkNumber checkString

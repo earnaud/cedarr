@@ -35,16 +35,18 @@
 #' containing database metadata and the interesting information in the
 #' `collection` subitem.
 #'
-#' @examples
-#' my.api.key <- readline()
-#'
-#' result <- cedarr::accessRelation(
-#'   my.api.key,
-#'   id = ???
-#' )
+# @examples
+# \dontrun{
+# my.api.key <- readline()
 #
-#' View(result)
-#'
+# result <- cedarr::accessRelation(
+#   my.api.key,
+#   id = ???
+# )
+#
+# View(result)
+# }
+#
 #' @export
 #' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString
 accessRelation <- function(
@@ -52,8 +54,8 @@ accessRelation <- function(
   id,
   output.mode = "content"
 ){
-  warning("DISCLAIMER: at current development stage of the package, this function is not
-operational !")
+  warning("DISCLAIMER: at current development stage of the package, this function
+          concerns provisional terms !")
 
   assert(combine = "and",
     # Missing ====
@@ -65,6 +67,7 @@ operational !")
   )
 
   # Request ====
+  id <- URLencode(id)
   result <- cedar.get(
     api.key,
     paste0("https://terminology.metadatacenter.org/bioportal/relations/", id),

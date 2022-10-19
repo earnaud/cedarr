@@ -58,6 +58,7 @@
 #' database metadata and the interesting information in the `collection` subitem.
 #'
 #' @examples
+#' \dontrun{
 #' my.api.key <- readline()
 #'
 #' # Query 1: list the roots properties in ENVO
@@ -71,6 +72,7 @@
 #'
 #' View(result1)
 #'
+#'
 #' # Query 2: get the parents properties for "alternative term" in ENVO
 #'
 #' result2 <- cedarr::accessProperty(
@@ -81,6 +83,7 @@
 #' )
 #'
 #' View(result2)
+#' }
 #'
 #' @export
 #' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString

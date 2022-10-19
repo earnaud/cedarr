@@ -6,7 +6,7 @@
 \usage{
 accessProvisional(
   api.key,
-  ontology,
+  ontology = NA_character_,
   output.mode = "content",
   page.index = 1,
   page.size = 50
@@ -54,6 +54,7 @@ This function matches the following query from the Swagger UI
 }
 }
 \examples{
+\dontrun{
 my.api.key <- readline()
 
 result <- cedarr::accessProvisional(
@@ -62,5 +63,6 @@ result <- cedarr::accessProvisional(
 )
 
 View(result)
+}
 
 }

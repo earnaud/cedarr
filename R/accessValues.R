@@ -55,16 +55,18 @@
 #' If `output.mode = "content"`, the `content` item is directly returned, containing
 #' database metadata and the interesting information in the `collection` subitem.
 #'
-#' @examples
-#' my.api.key <- readline()
-#'
-#' result <- cedarr::accessValues(
-#'   my.api.key,
-#'   vs.collection = "CEDARVS",
-#'   id = ??? # WIP
-#' )
-#'
-#' View(result)
+# @examples
+# \dontrun{
+# my.api.key <- readline()
+#
+# result <- cedarr::accessValues(
+#   my.api.key,
+#   vs.collection = "CEDARVS",
+#   id = ??? # WIP
+# )
+#
+# View(result)
+# }
 #'
 #' @export
 #' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkNumber checkString
@@ -78,7 +80,7 @@ accessValues <- function(
   page.size= 50
 ){
   warning("DISCLAIMER: at current development stage of the package, this function is not
-operational !")
+operational !", immediate. = TRUE)
 
   assert(combine = "and",
     # Missing ====
@@ -108,8 +110,9 @@ operational !")
   }
 
   # Request ====
+  browser()
   result <- ifelse(
-    is.null(id) || (!is.null(id) && sub == "all-values"),
+    is.null(id) || (!is.null(id) && identical(sub, "all-values")),
     cedar.get(
       api.key,
       paste0(

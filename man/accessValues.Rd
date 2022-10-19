@@ -75,15 +75,3 @@ This function matches the following queries from the Swagger UI
 These differents requests are differenciated by the \code{id} and \code{sub}
 arguments.
 }
-\examples{
-my.api.key <- readline()
-
-result <- cedarr::accessValues(
-  my.api.key,
-  vs.collection = "CEDARVS",
-  id = ??? # WIP
-)
-
-View(result)
-
-}

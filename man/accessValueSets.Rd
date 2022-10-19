@@ -73,6 +73,7 @@ These differents requests are differenciated by the \code{id} and \code{sub}
 arguments.
 }
 \examples{
+\dontrun{
 my.api.key <- readline()
 
 result <- cedarr::accessValueSets(
@@ -82,5 +83,6 @@ result <- cedarr::accessValueSets(
 )
 
 View(result)
+}
 
 }

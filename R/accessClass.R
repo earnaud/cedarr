@@ -54,6 +54,7 @@
 #' database metadata and the interesting information in the `collection` subitem.
 #'
 #' @examples
+#' \dontrun{
 #' my.api.key <- readline()
 #'
 #' # Fetch 'biome' class in ENVO
@@ -64,6 +65,7 @@
 #' )
 #'
 #' View(result)
+#' }
 #'
 #' @export
 #' @importFrom checkmate assert anyMissing checkCharacter checkString checkChoice

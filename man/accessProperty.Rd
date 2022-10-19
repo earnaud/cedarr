@@ -74,6 +74,7 @@ These differents requests are differenciated by the \code{id} and \code{sub}
 arguments.
 }
 \examples{
+\dontrun{
 my.api.key <- readline()
 
 # Query 1: list the roots properties in ENVO
@@ -87,6 +88,7 @@ result1 <- cedarr::accessProperty(
 
 View(result1)
 
+
 # Query 2: get the parents properties for "alternative term" in ENVO
 
 result2 <- cedarr::accessProperty(
@@ -97,5 +99,6 @@ result2 <- cedarr::accessProperty(
 )
 
 View(result2)
+}
 
 }

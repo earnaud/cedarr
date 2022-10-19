@@ -70,6 +70,7 @@ This function matches the following queries from the Swagger UI
 These differents requests are differenciated by the \code{sub} argument.
 }
 \examples{
+\dontrun{
 my.api.key <- readline()
 
 # Fetch 'biome' class in ENVO
@@ -80,5 +81,6 @@ result <- cedarr::accessClass(
 )
 
 View(result)
+}
 
 }

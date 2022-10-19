@@ -84,6 +84,7 @@ This function matches the following query from the Swagger UI
 }
 }
 \examples{
+\dontrun{
 my.api.key <- readline()
 
 result <- cedarr::search(
@@ -93,5 +94,6 @@ result <- cedarr::search(
 )
 
 View(result)
+}
 
 }

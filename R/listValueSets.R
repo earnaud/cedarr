@@ -18,6 +18,7 @@
 #' An exhaustive list of value sets for any value set collection.
 #'
 #' @examples
+#' \dontrun{
 #' my.api.key <- readline()
 #'
 #' result1 <- cedarr::listValueSets(
@@ -25,6 +26,7 @@
 #' )
 #'
 #' View(result1)
+#' }
 #'
 #' @export
 #' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString
@@ -65,12 +67,15 @@ listValueSets <- function(
 #' database metadata and the interesting information in the `collection` subitem.
 #'
 #' @examples
+#' \dontrun{
+#' my.api.key <- readline()
 #'
 #' result2 <- cedarr::listVSCollections(
 #'   my.api.key,
 #' )
 #'
 #' View(result2)
+#' }
 #'
 #' @export
 #' @importFrom checkmate assert anyMissing checkCharacter checkChoice checkString
