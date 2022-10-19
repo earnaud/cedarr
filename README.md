@@ -9,6 +9,15 @@ You can install this package with the following command:
 devtools::install_github("earnaud/cedarr", dependencies = TRUE)
 ```
 
+## Usage.
+
+The features developped in this package are convenience functions for any R user
+to query the [CEDAR API](https://terminology.metadatacenter.org/api/).
+
+All functions address different part of the API. However, one can use `cedarGet()` 
+as a bottleneck function since this one is called from any other. It gathers 
+all arguments possible to build any query. See `?cedarr::cedarGet`.
+
 ## Additional details
 
 You might access to a detail of the way http responses are structured with:
@@ -18,16 +27,10 @@ help("API response", package = "cedarr")
 # ?cedarr::`API response`
 ```
 
-## About this package
-
-The features developped in this package are convenience functions for any R user
-to query the [CEDAR API](https://terminology.metadatacenter.org/api/).
-
 ## Intellectual Properties Owner
 
-This package has been freely developped by Elie Arnaud, from the French National
-Biodiversity Data Hub (PNDB), with the agreement of BioPortal, through John 
-Graybeal.
+{cedarr} is accessible under [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/fr/deed.en).
+It relies on CEDAR and NCBO Bioportal services.
 
 **Bioportal**
 
